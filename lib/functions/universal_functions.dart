@@ -1,0 +1,77 @@
+import 'package:aura/database/playlist/playlistmodel/playlist_model.dart';
+import 'package:aura/screens/playlist_scrn.dart';
+import 'package:aura/songs/playlist.dart';
+import 'package:aura/songs/songs.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+
+//calling from navigator screen
+Future playlistcreating(playlistName) async {
+  playListNotifier.value.add(EachPlaylist(name: playlistName));
+  Box<PlaylistClass> playlistdb = await Hive.openBox('playlist');
+  playlistdb.add(PlaylistClass(playlistName: playlistName));
+  playlistdb.close();
+}
+
+Future playlistaddDB(Songs addingsong, String playlistName) async {
+  //error
+  Box<PlaylistClass> playlistdb = await Hive.openBox('playlist');
+
+  for (PlaylistClass element in playlistdb.values) {
+    if (element.playlistName == playlistName) {
+      var key = element.key;
+      PlaylistClass updateplaylist = PlaylistClass(playlistName: playlistName);
+      updateplaylist.items.addAll(element.items);
+      updateplaylist.items.add(addingsong.id);
+      playlistdb.put(key, updateplaylist);
+      break;
+    }
+  }
+  playlistdb.close();
+}
+
+Future playlistremoveDB(Songs removingsong, String playlistName) async {
+  //error
+  Box<PlaylistClass> playlistdb = await Hive.openBox('playlist');
+  for (PlaylistClass element in playlistdb.values) {
+    if (element.playlistName == playlistName) {
+      var key = element.key;
+      PlaylistClass updateplaylist = PlaylistClass(playlistName: playlistName);
+      for (int item in element.items) {
+        if (item == removingsong.id) {
+          continue;
+        }
+        updateplaylist.items.add(item);
+      }
+      playlistdb.put(key, updateplaylist);
+      break;
+    }
+  }
+}
+
+Future playlistdelete(int index) async {
+  String playlistname = playListNotifier.value[index].name;
+  Box<PlaylistClass> playlistdb = await Hive.openBox('playlist');
+  for (PlaylistClass element in playlistdb.values) {
+    if (element.playlistName == playlistname) {
+      var key = element.key;
+      playlistdb.delete(key);
+      break;
+    }
+  }
+  playListNotifier.value.removeAt(index);
+  playListNotifier.notifyListeners();
+}
+
+Future playlistrename(int index, String newname) async {
+  String playlistname = playListNotifier.value[index].name;
+  Box<PlaylistClass> playlistdb = await Hive.openBox('playlist');
+  for (PlaylistClass element in playlistdb.values) {
+    if (element.playlistName == playlistname) {
+      var key = element.key;
+      element.playlistName = newname;
+      playlistdb.put(key, element);
+    }
+  }
+  playListNotifier.value[index].name = newname;
+  playListNotifier.notifyListeners();
+}
