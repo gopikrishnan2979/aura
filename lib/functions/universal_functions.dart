@@ -13,7 +13,6 @@ Future playlistcreating(playlistName) async {
 }
 
 Future playlistaddDB(Songs addingsong, String playlistName) async {
-  //error
   Box<PlaylistClass> playlistdb = await Hive.openBox('playlist');
 
   for (PlaylistClass element in playlistdb.values) {
@@ -30,7 +29,6 @@ Future playlistaddDB(Songs addingsong, String playlistName) async {
 }
 
 Future playlistremoveDB(Songs removingsong, String playlistName) async {
-  //error
   Box<PlaylistClass> playlistdb = await Hive.openBox('playlist');
   for (PlaylistClass element in playlistdb.values) {
     if (element.playlistName == playlistName) {

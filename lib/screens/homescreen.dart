@@ -1,3 +1,4 @@
+import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:aura/common_widget/favoritewidget.dart';
 import 'package:aura/common_widget/listtilecustom.dart';
 import 'package:aura/screens/commonscreen/add_to_playlist.dart';
@@ -9,6 +10,8 @@ import 'package:aura/screens/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:on_audio_query/on_audio_query.dart';
+
+AssetsAudioPlayer player = AssetsAudioPlayer();
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -90,12 +93,12 @@ class HomeScreen extends StatelessWidget {
   Widget icontextheading(icon, String title, context) {
     return Row(
       children: [
-        FaIcon(icon, color: const Color(0xFF8A1BB1)),
+        FaIcon(icon, color: const Color(0xFFC8C8C8)),
         Padding(
           padding:
               EdgeInsets.only(left: MediaQuery.of(context).size.height * 0.01),
           child: Text(title,
-              style: const TextStyle(color: Color(0xFF8A1BB1), fontSize: 23)),
+              style: const TextStyle(color: Color(0xFFC8C8C8), fontSize: 23)),
         )
       ],
     );
@@ -129,7 +132,8 @@ class HomeScreen extends StatelessWidget {
                 child: Center(
                   child: Text(
                     title,
-                    style: const TextStyle(color: Colors.white, fontSize: 18),
+                    style:
+                        const TextStyle(color: Color(0xFFE8E8E8), fontSize: 18),
                   ),
                 ),
               ))
@@ -154,12 +158,20 @@ class HomeScreen extends StatelessWidget {
       //count of tile
       itemBuilder: (context, index) => InkWell(
           onTap: () {
-            if (currentplaying != null) {
-              currentplaying!.stop();
+            player.stop();
+            playinglistAudio.clear();
+            for (int i = 0; i < allsongs.length; i++) {
+              playinglistAudio.add(Audio.file(allsongs[i].songurl!,
+                  metas: Metas(
+                    title: allsongs[i].songname,
+                    artist: allsongs[i].artist,
+                    id: allsongs[i].id.toString(),
+                  )));
             }
 
             Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => PlayingScreen(playing: allsongs[index]),
+              builder: (context) =>
+                  PlayingScreen(playinglistSongs: allsongs, index: index),
             ));
           },
           child: ListTileCustom(
@@ -176,7 +188,7 @@ class HomeScreen extends StatelessWidget {
               nullArtworkWidget: ClipRRect(
                 borderRadius: BorderRadius.circular(7),
                 child: Image.asset(
-                  'assets/images/audiobg.png',
+                  'assets/images/Happier.png',
                 ),
               ),
             ),

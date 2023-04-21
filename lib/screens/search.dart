@@ -5,13 +5,15 @@ import 'package:aura/screens/favorite.dart';
 import 'package:aura/screens/splash_screen.dart';
 import 'package:aura/songs/songs.dart';
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 
 class Search extends StatelessWidget {
-  Search({super.key});
-  ValueNotifier<List<Songs>> data = ValueNotifier([]);
+  const Search({super.key});
+
   @override
   Widget build(BuildContext context) {
+    ValueNotifier<List<Songs>> data = ValueNotifier([]);
     final TextEditingController searchController = TextEditingController();
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 20, 30, 124),
@@ -50,7 +52,7 @@ class Search extends StatelessWidget {
                                     borderRadius: BorderRadius.circular(10)),
                                 filled: true,
                                 fillColor: const Color(0xFFCFD2EB)),
-                            onChanged: (value) => search(value),
+                            onChanged: (value) => search(value, data),
                           ),
                         ),
                       ),
@@ -62,7 +64,7 @@ class Search extends StatelessWidget {
                                 ? fullListshow(context)
                                 : data.value.isEmpty
                                     ? searchisempty()
-                                    : searchfound(context)),
+                                    : searchfound(context, data)),
                       )
                     ],
                   ),
@@ -90,7 +92,7 @@ class Search extends StatelessWidget {
     );
   }
 
-  Widget searchfound(context) {
+  Widget searchfound(context, ValueNotifier data) {
     return ListView.builder(
       padding:
           EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.1),
@@ -108,7 +110,7 @@ class Search extends StatelessWidget {
             nullArtworkWidget: ClipRRect(
               borderRadius: BorderRadius.circular(7),
               child: Image.asset(
-                'assets/images/audiobg.png',
+                'assets/images/Happier.png',
               ),
             ),
           ),
@@ -165,7 +167,7 @@ class Search extends StatelessWidget {
             nullArtworkWidget: ClipRRect(
               borderRadius: BorderRadius.circular(7),
               child: Image.asset(
-                'assets/images/audiobg.png',
+                'assets/images/Happier.png',
               ),
             ),
           ),
@@ -207,11 +209,18 @@ class Search extends StatelessWidget {
     );
   }
 
-  search(String querry) {
+  search(String querry, ValueNotifier data) {
     data.value = allsongs
         .where((element) => element.songname!
             .toLowerCase()
             .contains(querry.toLowerCase().trim()))
         .toList();
+    // for(Songs elements in allsongs){
+    //   if(elements.songname){
+    //     add
+    //   }
+    // }
   }
+
+
 }

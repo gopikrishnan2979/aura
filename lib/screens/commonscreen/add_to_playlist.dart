@@ -130,14 +130,17 @@ class AddToPlaylist extends StatelessWidget {
         onTap: () {
           if (!playListNotifier.value[index].container.contains(addingsong)) {
             playListNotifier.value[index].container.add(addingsong);
-            playlistaddDB(addingsong,playListNotifier.value[index].name);
-            ScaffoldMessenger.of(ctx).showSnackBar(SnackBar(
-                backgroundColor: Colors.green,
-                content:
-                    Text('Added to ${playListNotifier.value[index].name}')));
+            playlistaddDB(addingsong, playListNotifier.value[index].name);
+            ScaffoldMessenger.of(ctx)
+              ..removeCurrentSnackBar()
+              ..showSnackBar(SnackBar(
+                  backgroundColor: Colors.green,
+                  content:
+                      Text('Added to ${playListNotifier.value[index].name}')));
           } else {
             ScaffoldMessenger.of(ctx)
-                .showSnackBar(const SnackBar(content: Text('Already exist')));
+              ..removeCurrentSnackBar()
+              ..showSnackBar(const SnackBar(content: Text('Already exist')));
           }
           Navigator.pop(ctx);
         },

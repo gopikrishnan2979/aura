@@ -1,4 +1,5 @@
-
+import 'package:aura/screens/homescreen.dart';
+import 'package:aura/screens/play_screen.dart';
 import 'package:aura/screens/playlist_scrn.dart';
 import 'package:flutter/material.dart';
 
@@ -42,7 +43,15 @@ class PlaylistInsidePart1 extends StatelessWidget {
               ),
               InkWell(
                 onTap: () {
+                  if(playListNotifier.value[currentplaylistindex].container.isNotEmpty){
+                    player.stop();
                   //playlist playing from here whole playlist songs have to be played
+                  Navigator.of(context).pushReplacement(MaterialPageRoute(
+                    builder: (context) => PlayingScreen(
+                        playinglistSongs: playListNotifier
+                            .value[currentplaylistindex].container,
+                        index: 0),
+                  ));}
                 },
                 child: const CircleAvatar(
                   radius: 30,

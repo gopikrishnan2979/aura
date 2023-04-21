@@ -5,10 +5,10 @@ import 'package:aura/songs/playlist.dart';
 import 'package:flutter/material.dart';
 
 class PlaylistIcon extends StatefulWidget {
-  EachPlaylist playlist;
-  int index;
-  int currentplaylistindex;
-  PlaylistIcon(
+  final EachPlaylist playlist;
+  final int index;
+  final int currentplaylistindex;
+  const PlaylistIcon(
       {super.key,
       required this.playlist,
       required this.index,

@@ -23,7 +23,7 @@ class _NavigatorScrnState extends State<NavigatorScrn> {
     const HomeScreen(),
     const Playlist(),
     const Favorite(),
-    Search(),
+    const Search(),
   ];
   List<Color> backgroundcolor = const [
     Color(0xFF202EB0),
@@ -36,6 +36,7 @@ class _NavigatorScrnState extends State<NavigatorScrn> {
   GlobalKey<ScaffoldState> scaffoldkey = GlobalKey();
   @override
   Widget build(BuildContext context) {
+    Color color = const Color.fromARGB(255, 104, 197, 255);
     return SafeArea(
       child: Scaffold(
         resizeToAvoidBottomInset: false,
@@ -51,11 +52,14 @@ class _NavigatorScrnState extends State<NavigatorScrn> {
           floatingActionButton: FloatingActionButton(
               backgroundColor: Colors.white,
               onPressed: () {
-                 if (currentplaying != null) {
-              currentplaying!.stop();
-            }
+
+                  player.stop();
+
                 Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => PlayingScreen(playing: allsongs[0]),
+                  builder: (context) => PlayingScreen(
+                    playinglistSongs: allsongs,
+                    index: 0,
+                  ),
                 ));
               },
               child: const Icon(
@@ -66,22 +70,16 @@ class _NavigatorScrnState extends State<NavigatorScrn> {
           bottomNavigationBar: CurvedNavigationBar(
             items: [
               FaIcon(FontAwesomeIcons.houseChimney,
-                  color: screenindex == 0
-                      ? const Color(0xFFC4FA53)
-                      : Colors.white),
+                  color: screenindex == 0 ? color : Colors.white),
               Center(
                   child: FaIcon(FontAwesomeIcons.indent,
-                      color: screenindex == 1
-                          ? const Color(0xFFC4FA53)
-                          : Colors.white)),
+                      color: screenindex == 1 ? color : Colors.white)),
               FaIcon(
                 Icons.favorite,
-                color:
-                    screenindex == 2 ? const Color(0xFFC4FA53) : Colors.white,
+                color: screenindex == 2 ? color : Colors.white,
               ),
               FaIcon(FontAwesomeIcons.magnifyingGlass,
-                  color:
-                      screenindex == 3 ? const Color(0xFFC4FA53) : Colors.white)
+                  color: screenindex == 3 ? color : Colors.white)
             ],
             color: const Color(0xFF0C113F),
             backgroundColor: const Color.fromARGB(0, 0, 0, 0),
@@ -141,7 +139,7 @@ class _NavigatorScrnState extends State<NavigatorScrn> {
         Padding(
           padding: EdgeInsets.only(right: 10.0),
           child: Text(
-            'Search',
+            'SEARCH',
             style: TextStyle(color: Colors.white, fontSize: 23),
           ),
         )

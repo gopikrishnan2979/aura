@@ -3,6 +3,7 @@ import 'package:aura/common_widget/listtilecustom.dart';
 import 'package:aura/screens/commonscreen/add_to_playlist.dart';
 import 'package:aura/songs/songs.dart';
 import 'package:flutter/material.dart';
+import 'package:on_audio_query/on_audio_query.dart';
 
 ValueNotifier<List<Songs>> favorite = ValueNotifier([]);
 
@@ -39,7 +40,21 @@ class Favorite extends StatelessWidget {
                     itemBuilder: (context, index) => ListTileCustom(
                       index: index,
                       context: context,
-                      leading: Image.asset('assets/images/audiobg.png'),
+                      leading: QueryArtworkWidget(
+              size: 3000,
+              quality: 100,
+              artworkQuality: FilterQuality.high,
+              artworkBorder: BorderRadius.circular(10),
+              artworkFit: BoxFit.cover,
+              id: favorite.value[index].id,
+              type: ArtworkType.AUDIO,
+              nullArtworkWidget: ClipRRect(
+                borderRadius: BorderRadius.circular(7),
+                child: Image.asset(
+                  'assets/images/Happier.png',
+                ),
+              ),
+            ),
                       tilecolor: const Color(0xFF939DF5),
                       title: Text(
                         favorite.value[index].songname ?? 'Unknown',
