@@ -69,7 +69,7 @@ class PlaylistInsidePart2 extends StatelessWidget {
               'Unknown',
           style: const TextStyle(
             fontWeight: FontWeight.bold,
-            fontSize: 16,
+            fontSize: 15,
             overflow: TextOverflow.ellipsis,
           ),
         ),
@@ -78,7 +78,7 @@ class PlaylistInsidePart2 extends StatelessWidget {
                   null
               ? '${playListNotifier.value[currentplaylistindex].container[idx].artist}'
               : 'Unknown',
-          style: const TextStyle(overflow: TextOverflow.ellipsis),
+          style: const TextStyle(overflow: TextOverflow.ellipsis, fontSize: 13),
         ),
         trailing2: FavoriteButton(
           isfav: favorite.value.contains(

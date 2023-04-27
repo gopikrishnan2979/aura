@@ -134,13 +134,22 @@ class AddToPlaylist extends StatelessWidget {
             ScaffoldMessenger.of(ctx)
               ..removeCurrentSnackBar()
               ..showSnackBar(SnackBar(
+                  duration: const Duration(milliseconds: 800),
+                  margin:
+                      const EdgeInsets.only(left: 30, right: 30, bottom: 40),
+                  behavior: SnackBarBehavior.floating,
                   backgroundColor: Colors.green,
-                  content:
-                      Text('Added to ${playListNotifier.value[index].name}')));
+                  content: Center(
+                      child: Text(
+                          'Song Added to ${playListNotifier.value[index].name}'))));
           } else {
             ScaffoldMessenger.of(ctx)
               ..removeCurrentSnackBar()
-              ..showSnackBar(const SnackBar(content: Text('Already exist')));
+              ..showSnackBar(const SnackBar(
+                  duration: Duration(milliseconds: 800),
+                  margin: EdgeInsets.only(left: 30, right: 30, bottom: 40),
+                  behavior: SnackBarBehavior.floating,
+                  content: Center(child: Text('Song already exist'))));
           }
           Navigator.pop(ctx);
         },

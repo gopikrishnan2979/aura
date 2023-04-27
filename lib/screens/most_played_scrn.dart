@@ -8,8 +8,8 @@ import 'package:aura/songs/songs.dart';
 import 'package:flutter/material.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 
-List<Songs> mostPlayedList = [];
-
+ValueNotifier<List<Songs>> mostPlayedList = ValueNotifier([]);
+ 
 class MostPlayedScrn extends StatelessWidget {
   const MostPlayedScrn({super.key});
 
@@ -54,22 +54,21 @@ class MostPlayedScrn extends StatelessWidget {
                 ),
               ),
               Expanded(
-                child: mostPlayedList.isEmpty
+                child: mostPlayedList.value.isEmpty
                     ? songlistempty()
                     : ListView.builder(
                         padding: const EdgeInsets.only(
                             left: 10, right: 10, top: 10, bottom: 30),
                         itemBuilder: (context, index) => InkWell(
                           onTap: () {
-                            playAudio(mostPlayedList, index);
+                            playAudio(mostPlayedList.value, index);
                             showModalBottomSheet(
                                 enableDrag: false,
                                 context: context,
                                 shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(12)),
                                 backgroundColor: const Color(0xFF202EAF),
-                                builder: (context) => const MiniPlayer
-                                ());
+                                builder: (context) => const MiniPlayer());
                           },
                           child: ListTileCustom(
                             index: index,
@@ -80,7 +79,7 @@ class MostPlayedScrn extends StatelessWidget {
                               artworkQuality: FilterQuality.high,
                               artworkBorder: BorderRadius.circular(7),
                               artworkFit: BoxFit.cover,
-                              id: mostPlayedList[index].id,
+                              id: mostPlayedList.value[index].id,
                               type: ArtworkType.AUDIO,
                               nullArtworkWidget: ClipRRect(
                                 borderRadius: BorderRadius.circular(7),
@@ -91,19 +90,20 @@ class MostPlayedScrn extends StatelessWidget {
                             ),
                             tilecolor: const Color(0xFF939DF5),
                             title: Text(
-                              mostPlayedList[index].songname!,
+                              mostPlayedList.value[index].songname!,
                               style: TextStyle(
                                   fontWeight: FontWeight.bold,
-                                  fontSize: 16,
+                                  fontSize: 15,
                                   overflow: TextOverflow.ellipsis),
                             ),
-                            subtitle: Text(mostPlayedList[index].artist!,
-                                style:
-                                    TextStyle(overflow: TextOverflow.ellipsis)),
+                            subtitle: Text(mostPlayedList.value[index].artist!,
+                                style: TextStyle(
+                                    overflow: TextOverflow.ellipsis,
+                                    fontSize: 13)),
                             trailing1: FavoriteButton(
                                 isfav: favorite.value
-                                    .contains(mostPlayedList[index]),
-                                currentSong: mostPlayedList[index]),
+                                    .contains(mostPlayedList.value[index]),
+                                currentSong: mostPlayedList.value[index]),
                             trailing2: Theme(
                               data: Theme.of(context)
                                   .copyWith(cardColor: const Color(0xFF87BEFF)),
@@ -117,13 +117,13 @@ class MostPlayedScrn extends StatelessWidget {
                                 onSelected: (value) => Navigator.of(context)
                                     .push(MaterialPageRoute(
                                   builder: (context) => AddToPlaylist(
-                                      addingsong: mostPlayedList[index]),
+                                      addingsong: mostPlayedList.value[index]),
                                 )),
                               ),
                             ),
                           ),
                         ),
-                        itemCount: mostPlayedList.length,
+                        itemCount: mostPlayedList.value.length,
                       ),
               )
             ],

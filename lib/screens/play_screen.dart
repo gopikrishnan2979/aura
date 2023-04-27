@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:aura/common_widget/favoritewidget.dart';
 import 'package:aura/common_widget/playscrnwidget/playscrn_widget.dart';
+import 'package:aura/database/mostplayed/mostplayed_functions.dart';
 import 'package:aura/functions/player_function.dart';
 import 'package:aura/screens/commonscreen/add_to_playlist.dart';
 import 'package:aura/screens/favorite.dart';
@@ -12,11 +13,13 @@ import 'package:aura/songs/songs.dart';
 import 'package:flutter/material.dart';
 import 'package:aura/screens/splash_screen.dart';
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:marquee/marquee.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 
 Songs? currentlyplaying;
 List<Audio> playinglistAudio = [];
+bool isRepeatmode = false;
 
 class PlayingScreen extends StatefulWidget {
   const PlayingScreen({super.key});
@@ -26,9 +29,9 @@ class PlayingScreen extends StatefulWidget {
 }
 
 class _PlayingScreenState extends State<PlayingScreen> {
+  bool isenteredtomostplayed = false;
   @override
   Widget build(BuildContext context) {
-    bool isenteredtomostplayed = false;
     return SafeArea(
         child: Scaffold(
       body: Container(
@@ -49,7 +52,7 @@ class _PlayingScreenState extends State<PlayingScreen> {
             : player.builderCurrent(
                 builder: (context, playing) {
                   int id = int.parse(playing.audio.audio.metas.id!);
-                  currentsongfinder(id);
+                  currentlyplayingfinder(id);
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -157,18 +160,38 @@ class _PlayingScreenState extends State<PlayingScreen> {
                                 Row(
                                   children: [
                                     IconButton(
-                                        onPressed: () {},
-                                        icon: const Icon(
-                                          Icons.shuffle,
-                                          size: 35,
-                                          color: Colors.white,
+                                        onPressed: () {
+                                          setState(() {
+                                            player.toggleShuffle();
+                                          });
+                                        },
+                                        icon: FaIcon(
+                                          FontAwesomeIcons.shuffle,
+                                          size: 28,
+                                          color: player.isShuffling.value
+                                              ? const Color(0xFF00FF57)
+                                              : Colors.white,
                                         )),
                                     IconButton(
-                                        onPressed: () {},
-                                        icon: const Icon(
+                                        onPressed: () {
+                                          setState(() {
+                                            if (isRepeatmode == false) {
+                                              isRepeatmode = true;
+                                              player
+                                                  .setLoopMode(LoopMode.single);
+                                            } else {
+                                              isRepeatmode = false;
+                                              player.setLoopMode(
+                                                  LoopMode.playlist);
+                                            }
+                                          });
+                                        },
+                                        icon: Icon(
                                           Icons.repeat,
                                           size: 35,
-                                          color: Colors.white,
+                                          color: isRepeatmode
+                                              ? const Color(0xFF00FF57)
+                                              : Colors.white,
                                         )),
                                   ],
                                 ),
@@ -187,10 +210,8 @@ class _PlayingScreenState extends State<PlayingScreen> {
                                 double totalvalue =
                                     totalduration.inMilliseconds.toDouble();
                                 double value = currentposvalue / totalvalue;
-                                if (!isenteredtomostplayed && value>0.5) {
-                                  int id =
-                                      int.parse(playing.audio.audio.metas.id!);
-                                  currentsongfinder(id);
+                                if (!isenteredtomostplayed && value > 0.5) {
+                                  mostplayedaddtodb(currentlyplaying!.id);
                                   isenteredtomostplayed = true;
                                 }
                                 return ProgressBar(
@@ -243,8 +264,8 @@ class _PlayingScreenState extends State<PlayingScreen> {
                                     onPressed: () {
                                       Future.delayed(
                                           const Duration(milliseconds: 800));
-                                      setState(() async {
-                                        await player.next();
+                                      setState(() {
+                                        player.next();
                                       });
                                     },
                                     icon: const Icon(

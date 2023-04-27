@@ -1,5 +1,8 @@
 import 'package:aura/database/favorite/fav_db_function/fav_functions.dart';
 import 'package:aura/screens/favorite.dart';
+import 'package:aura/screens/most_played_scrn.dart';
+import 'package:aura/screens/playlist_scrn.dart';
+import 'package:aura/screens/recent_scrn.dart';
 import 'package:aura/songs/songs.dart';
 import 'package:flutter/material.dart';
 
@@ -36,6 +39,9 @@ class _FavoriteButtonState extends State<FavoriteButton> {
               snackbar(text: 'Removed from liked', color: Colors.red);
             }
             favorite.notifyListeners();
+            recentList.notifyListeners();
+            mostPlayedList.notifyListeners();
+            playListNotifier.notifyListeners();
           });
         },
         child: Icon(

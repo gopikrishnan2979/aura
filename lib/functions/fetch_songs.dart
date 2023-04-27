@@ -5,6 +5,7 @@ import 'package:aura/screens/favorite.dart';
 import 'package:aura/screens/most_played_scrn.dart';
 import 'package:aura/screens/play_screen.dart';
 import 'package:aura/screens/playlist_scrn.dart';
+import 'package:aura/screens/recent_scrn.dart';
 import 'package:aura/screens/splash_screen.dart';
 import 'package:aura/songs/playlist.dart';
 import 'package:aura/songs/songs.dart';
@@ -47,42 +48,49 @@ class FetchSongs {
               )));
         }
       }
-      List<FavModel> favsongcheck = [];
-      Box<FavModel> favdb = await Hive.openBox('favorite');
-      favsongcheck.addAll(favdb.values);
-      for (var favs in favsongcheck) {
-        int count = 0;
-        for (var songs in allsongs) {
-          if (favs.id == songs.id) {
-            favorite.value.add(songs);
-            break;
-          } else {
-            count++;
-          }
-        }
-        if (count == allsongs.length) {
-          var key = favs.key;
-          favdb.delete(key);
-        }
-      }
-      favdb.close();
-      Box<PlaylistClass> playlistdb = await Hive.openBox('playlist');
-      for (PlaylistClass elements in playlistdb.values) {
-        String playlistname = elements.playlistName;
-        EachPlaylist playlistfetch = EachPlaylist(name: playlistname);
-        for (int id in elements.items) {
-          for (Songs songs in allsongs) {
-            if (id == songs.id) {
-              playlistfetch.container.add(songs);
-              break;
-            }
-          }
-        }
-        playListNotifier.value.add(playlistfetch);
-      }
-      playlistdb.close();
+      await favfetch();
+      await playlistfetch();
+      await mostplayedfetch();
+      await recentfetch();
     }
-    await mostplayedfetch();
+  }
+
+  favfetch() async {
+    List<FavModel> favsongcheck = [];
+    Box<FavModel> favdb = await Hive.openBox('favorite');
+    favsongcheck.addAll(favdb.values);
+    for (var favs in favsongcheck) {
+      int count = 0;
+      for (var songs in allsongs) {
+        if (favs.id == songs.id) {
+          favorite.value.add(songs);
+          break;
+        } else {
+          count++;
+        }
+      }
+      if (count == allsongs.length) {
+        var key = favs.key;
+        favdb.delete(key);
+      }
+    }
+  }
+
+  playlistfetch() async {
+    Box<PlaylistClass> playlistdb = await Hive.openBox('playlist');
+    for (PlaylistClass elements in playlistdb.values) {
+      String playlistname = elements.playlistName;
+      EachPlaylist playlistfetch = EachPlaylist(name: playlistname);
+      for (int id in elements.items) {
+        for (Songs songs in allsongs) {
+          if (id == songs.id) {
+            playlistfetch.container.add(songs);
+            break;
+          }
+        }
+      }
+      playListNotifier.value.add(playlistfetch);
+    }
   }
 
   mostplayedfetch() async {
@@ -110,11 +118,24 @@ class FetchSongs {
       for (List<int> element in mostplayedTemp) {
         for (Songs song in allsongs) {
           if (element[0] == song.id && element[1] > 3) {
-            mostPlayedList.add(song);
+            mostPlayedList.value.add(song);
           }
         }
       }
     }
-    mostplayedDb.close();
+  }
+
+  recentfetch() async {
+    Box<int> recentDb = await Hive.openBox('recent');
+    List<Songs> recenttemp = [];
+    for (int element in recentDb.values) {
+      for (Songs song in allsongs) {
+        if (element == song.id) {
+          recenttemp.add(song);
+          break;
+        }
+      }
+    }
+    recentList.value = recenttemp.reversed.toList();
   }
 }

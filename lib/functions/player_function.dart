@@ -1,5 +1,5 @@
 import 'package:assets_audio_player/assets_audio_player.dart';
-import 'package:aura/database/mostplayed/mostplayed_functions.dart';
+import 'package:aura/database/recent/recently_played.dart';
 import 'package:aura/screens/homescreen.dart';
 import 'package:aura/screens/play_screen.dart';
 import 'package:aura/screens/splash_screen.dart';
@@ -17,7 +17,6 @@ playAudio(List<Songs> songs, int index) async {
           id: songs[i].id.toString(),
         )));
   }
-
   await player.open(
       Playlist(
         audios: playinglistAudio,
@@ -25,14 +24,15 @@ playAudio(List<Songs> songs, int index) async {
       ),
       showNotification: true,
       notificationSettings: const NotificationSettings(stopEnabled: false));
+  player.setLoopMode(LoopMode.playlist);
 }
 
-currentsongfinder(int? playingId) {
+currentlyplayingfinder(int? playingId) {
   for (Songs song in allsongs) {
     if (song.id == playingId) {
       currentlyplaying = song;
       break;
     }
   }
-  mostplayedaddtodb(currentlyplaying!.id);
+  recentadd(currentlyplaying!);
 }

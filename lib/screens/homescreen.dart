@@ -193,7 +193,6 @@ class _HomeScreenState extends State<HomeScreen> {
       shrinkWrap: true,
       itemBuilder: (context, index) => InkWell(
           onTap: () {
-
             playAudio(allsongs, index);
             setState(() {});
           },
@@ -220,14 +219,15 @@ class _HomeScreenState extends State<HomeScreen> {
               style: const TextStyle(
                 overflow: TextOverflow.ellipsis,
                 fontWeight: FontWeight.bold,
-                fontSize: 16,
+                fontSize: 15,
               ),
             ),
             subtitle: Text(
               allsongs[index].artist != null
                   ? '${allsongs[index].artist}'
                   : 'Unknown',
-              style: const TextStyle(overflow: TextOverflow.ellipsis),
+              style: const TextStyle(
+                  overflow: TextOverflow.ellipsis, fontSize: 13),
             ),
             trailing1: FavoriteButton(
               isfav: favorite.value.contains(allsongs[index]),

@@ -3,6 +3,8 @@ import 'package:aura/common_widget/listtilecustom.dart';
 import 'package:aura/functions/player_function.dart';
 import 'package:aura/screens/commonscreen/add_to_playlist.dart';
 import 'package:aura/screens/favorite.dart';
+import 'package:aura/screens/mini_player.dart';
+import 'package:aura/screens/play_screen.dart';
 import 'package:aura/screens/splash_screen.dart';
 import 'package:aura/songs/songs.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +15,15 @@ class Search extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (currentlyplaying != null) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        showBottomSheet(
+            enableDrag: false,
+            context: context,
+            backgroundColor: const Color(0xFF202EAF),
+            builder: (context) => const MiniPlayer());
+      });
+    }
     ValueNotifier<List<Songs>> data = ValueNotifier([]);
     final TextEditingController searchController = TextEditingController();
     return Scaffold(
@@ -130,14 +141,15 @@ class Search extends StatelessWidget {
               data.value[index].songname ?? 'Unknown',
               style: const TextStyle(
                   fontWeight: FontWeight.bold,
-                  fontSize: 16,
+                  fontSize: 15,
                   overflow: TextOverflow.ellipsis),
             ),
             subtitle: Text(
               data.value[index].artist != null
                   ? '${data.value[index].artist}'
                   : 'Unknown',
-              style: const TextStyle(overflow: TextOverflow.ellipsis),
+              style: const TextStyle(
+                  overflow: TextOverflow.ellipsis, fontSize: 13),
             ),
             trailing1: FavoriteButton(
                 isfav: favorite.value.contains(data.value[index]),
@@ -193,14 +205,14 @@ class Search extends StatelessWidget {
               allsongs[index].songname ?? 'Unknown',
               style: const TextStyle(
                 fontWeight: FontWeight.bold,
-                fontSize: 16,
+                fontSize: 15,
                 overflow: TextOverflow.ellipsis,
               ),
             ),
             subtitle: Text(
               '${allsongs[index].artist}',
               style: const TextStyle(
-                fontSize: 16,
+                fontSize: 13,
                 overflow: TextOverflow.ellipsis,
               ),
             ),

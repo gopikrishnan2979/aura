@@ -4,12 +4,12 @@ import 'package:aura/functions/player_function.dart';
 import 'package:aura/screens/commonscreen/add_to_playlist.dart';
 import 'package:aura/screens/favorite.dart';
 import 'package:aura/screens/mini_player.dart';
-import 'package:aura/screens/splash_screen.dart';
 import 'package:aura/songs/songs.dart';
 import 'package:flutter/material.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 
-List<Songs> recentList = [];
+
+ValueNotifier<List<Songs>> recentList=ValueNotifier([]);
 
 class RecentScrn extends StatelessWidget {
   const RecentScrn({super.key});
@@ -54,9 +54,9 @@ class RecentScrn extends StatelessWidget {
                   ),
                 ),
               ),
-              Expanded(
+              ValueListenableBuilder(valueListenable: recentList, builder: (context, value, child) => Expanded(
                 child: listtilebuilder(),
-              )
+              ),)
             ],
           ),
         ),
@@ -74,20 +74,20 @@ class RecentScrn extends StatelessWidget {
   }
 
   Widget listtilebuilder() {
-    return recentList.isEmpty
+    return recentList.value.isEmpty
         ? songlistempty()
         : ListView.builder(
             padding:
                 const EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 30),
             itemBuilder: (context, index) => InkWell(
               onTap: () {
-                playAudio(recentList, index);
+                playAudio(recentList.value, index);
                 showModalBottomSheet(
-                            context: context,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12)),
-                            backgroundColor: const Color(0xFF202EAF),
-                            builder: (context) => const MiniPlayer());
+                    context: context,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12)),
+                    backgroundColor: const Color(0xFF202EAF),
+                    builder: (context) => const MiniPlayer());
               },
               child: ListTileCustom(
                 index: index,
@@ -98,7 +98,7 @@ class RecentScrn extends StatelessWidget {
                   artworkQuality: FilterQuality.high,
                   artworkBorder: BorderRadius.circular(10),
                   artworkFit: BoxFit.cover,
-                  id: recentList[index].id,
+                  id: recentList.value[index].id,
                   type: ArtworkType.AUDIO,
                   nullArtworkWidget: ClipRRect(
                     borderRadius: BorderRadius.circular(7),
@@ -108,29 +108,36 @@ class RecentScrn extends StatelessWidget {
                   ),
                 ),
                 tilecolor: const Color(0xFF939DF5),
-                title: Text(recentList[index].songname!),
-                subtitle: Text(recentList[index].artist!),
+                title: Text(
+                  recentList.value[index].songname!,
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      overflow: TextOverflow.ellipsis,
+                      fontSize: 15),
+                ),
+                subtitle: Text(recentList.value[index].artist!,
+                    style: TextStyle(
+                        overflow: TextOverflow.ellipsis, fontSize: 12)),
                 trailing1: FavoriteButton(
-                    isfav: favorite.value.contains(recentList[index]),
-                    currentSong: recentList[index]),
+                    isfav: favorite.value.contains(recentList.value[index]),
+                    currentSong: recentList.value[index]),
                 trailing2: Theme(
                   data: Theme.of(context)
                       .copyWith(cardColor: const Color(0xFF87BEFF)),
                   child: PopupMenuButton(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15)),
-                    itemBuilder: (context) =>
-                        [const PopupMenuItem(child: Text('Add to playlist'))],
-                        onSelected: (value) =>
-                  Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) =>
-                    AddToPlaylist(addingsong: recentList[index]),
-              ))
-                  ),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15)),
+                      itemBuilder: (context) =>
+                          [const PopupMenuItem(child: Text('Add to playlist'))],
+                      onSelected: (value) =>
+                          Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) =>
+                                AddToPlaylist(addingsong: recentList.value[index]),
+                          ))),
                 ),
               ),
             ),
-            itemCount: recentList.length,
+            itemCount: recentList.value.length,
           );
   }
 }

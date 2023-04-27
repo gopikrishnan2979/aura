@@ -1,5 +1,7 @@
 import 'package:aura/functions/universal_functions.dart';
 import 'package:aura/screens/inside_playlist.dart';
+import 'package:aura/screens/mini_player.dart';
+import 'package:aura/screens/play_screen.dart';
 import 'package:aura/songs/playlist.dart';
 
 import 'package:flutter/material.dart';
@@ -9,9 +11,19 @@ import 'package:flutter/material.dart';
 ValueNotifier<List<EachPlaylist>> playListNotifier = ValueNotifier([]);
 
 class PlaylistScrn extends StatelessWidget {
+  
   const PlaylistScrn({super.key});
   @override
   Widget build(BuildContext context) {
+     if (currentlyplaying != null) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        showBottomSheet(
+            enableDrag: false,
+            context: context,
+            backgroundColor: const Color(0xFF202EAF),
+            builder: (context) => const MiniPlayer());
+      });
+    }
     final GlobalKey rebuildkey = GlobalKey();
     return Scaffold(
       backgroundColor: const Color(0xFF202EB0),

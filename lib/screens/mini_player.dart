@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:assets_audio_player/assets_audio_player.dart';
+import 'package:aura/database/mostplayed/mostplayed_functions.dart';
 import 'package:aura/functions/player_function.dart';
 import 'package:aura/screens/homescreen.dart';
 import 'package:aura/screens/play_screen.dart';
@@ -16,7 +17,6 @@ class MiniPlayer extends StatefulWidget {
 }
 
 class _MiniPlayerState extends State<MiniPlayer> {
-  
   @override
   Widget build(BuildContext context) {
     bool isenteredtomostplayed = false;
@@ -37,6 +37,9 @@ class _MiniPlayerState extends State<MiniPlayer> {
           height: MediaQuery.of(context).size.height * 0.0738,
           child: player.builderCurrent(
             builder: (context, playing) {
+              int id = int.parse(playing.audio.audio.metas.id!);
+              currentlyplayingfinder(id);
+             
               return Column(
                 children: [
                   Padding(
@@ -114,9 +117,9 @@ class _MiniPlayerState extends State<MiniPlayer> {
                           player: player,
                           builder: (context, isPlaying) {
                             return InkWell(
-                                onTap: () async {
+                                onTap: () {
                                   isPlaying = isPlaying = !isPlaying;
-                                  await player.playOrPause();
+                                  player.playOrPause();
                                 },
                                 child: CircleAvatar(
                                   backgroundColor: const Color(0xFF0C113F),
@@ -130,9 +133,9 @@ class _MiniPlayerState extends State<MiniPlayer> {
                           },
                         ),
                         InkWell(
-                            onTap: () async {
+                            onTap: () {
                               Future.delayed(const Duration(milliseconds: 800));
-                              await player.next();
+                              player.next();
                             },
                             child: CircleAvatar(
                               backgroundColor: const Color(0xFF0C113F),
@@ -168,7 +171,8 @@ class _MiniPlayerState extends State<MiniPlayer> {
                                 if (!isenteredtomostplayed && value > 0.5) {
                                   int id =
                                       int.parse(playing.audio.audio.metas.id!);
-                                  currentsongfinder(id);
+                                  // currentsongfinder(id);
+                                  mostplayedaddtodb(id);
                                   isenteredtomostplayed = true;
                                 }
 
