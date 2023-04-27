@@ -3,10 +3,8 @@ import 'package:aura/common_widget/drawer.dart';
 import 'package:aura/functions/universal_functions.dart';
 import 'package:aura/screens/favorite.dart';
 import 'package:aura/screens/homescreen.dart';
-import 'package:aura/screens/play_screen.dart';
 import 'package:aura/screens/playlist_scrn.dart';
 import 'package:aura/screens/search.dart';
-import 'package:aura/screens/splash_screen.dart';
 import 'package:aura/songs/playlist.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
@@ -21,7 +19,7 @@ class NavigatorScrn extends StatefulWidget {
 class _NavigatorScrnState extends State<NavigatorScrn> {
   final List screens = [
     const HomeScreen(),
-    const Playlist(),
+    const PlaylistScrn(),
     const Favorite(),
     const Search(),
   ];
@@ -33,14 +31,12 @@ class _NavigatorScrnState extends State<NavigatorScrn> {
   ];
 
   int screenindex = 0;
-  GlobalKey<ScaffoldState> scaffoldkey = GlobalKey();
   @override
   Widget build(BuildContext context) {
     Color color = const Color.fromARGB(255, 104, 197, 255);
     return SafeArea(
       child: Scaffold(
         resizeToAvoidBottomInset: false,
-        key: scaffoldkey,
         body: Scaffold(
           backgroundColor: backgroundcolor[screenindex],
           drawer: DrawerWidget(),
@@ -49,24 +45,6 @@ class _NavigatorScrnState extends State<NavigatorScrn> {
             child: appbarselector(screenindex, context),
           ),
           body: screens[screenindex],
-          floatingActionButton: FloatingActionButton(
-              backgroundColor: Colors.white,
-              onPressed: () {
-
-                  player.stop();
-
-                Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => PlayingScreen(
-                    playinglistSongs: allsongs,
-                    index: 0,
-                  ),
-                ));
-              },
-              child: const Icon(
-                Icons.play_arrow_rounded,
-                size: 58,
-                color: Color(0xFF202EB0),
-              )),
           bottomNavigationBar: CurvedNavigationBar(
             items: [
               FaIcon(FontAwesomeIcons.houseChimney,

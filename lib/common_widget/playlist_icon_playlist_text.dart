@@ -48,15 +48,15 @@ class _PlaylistIconState extends State<PlaylistIcon> {
           playListNotifier.notifyListeners();
         },
         icon: isadded
-            ? Icon(
+            ? const Icon(
                 Icons.remove,
                 size: 30,
-                color: Colors.white,
+                color: Color.fromARGB(255, 255, 255, 255),
               )
-            : Icon(
+            : const Icon(
                 Icons.add,
                 size: 30,
-                color: Colors.white,
+                color: Color.fromARGB(255, 255, 255, 255),
               ));
   }
 }

@@ -1,6 +1,9 @@
+import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:aura/database/favorite/dbmodel/fav_model.dart';
 import 'package:aura/database/playlist/playlistmodel/playlist_model.dart';
 import 'package:aura/screens/favorite.dart';
+import 'package:aura/screens/most_played_scrn.dart';
+import 'package:aura/screens/play_screen.dart';
 import 'package:aura/screens/playlist_scrn.dart';
 import 'package:aura/screens/splash_screen.dart';
 import 'package:aura/songs/playlist.dart';
@@ -36,6 +39,12 @@ class FetchSongs {
               duration: element.duration,
               id: element.id,
               songurl: element.uri));
+          playinglistAudio.add(Audio.file(element.uri!,
+              metas: Metas(
+                title: element.displayNameWOExt,
+                artist: element.artist,
+                id: element.id.toString(),
+              )));
         }
       }
       List<FavModel> favsongcheck = [];
@@ -73,5 +82,39 @@ class FetchSongs {
       }
       playlistdb.close();
     }
+    await mostplayedfetch();
+  }
+
+  mostplayedfetch() async {
+    Box<int> mostplayedDb = await Hive.openBox('mostplayed');
+    if (mostplayedDb.isEmpty) {
+      for (Songs song in allsongs) {
+        mostplayedDb.put(song.id, 0);
+      }
+    } else {
+      List<List<int>> mostplayedTemp = [];
+      for (Songs song in allsongs) {
+        int count = mostplayedDb.get(song.id)!;
+        mostplayedTemp.add([song.id, count]);
+      }
+      for (int i = 0; i < mostplayedTemp.length - 1; i++) {
+        for (int j = i; j < mostplayedTemp.length; j++) {
+          if (mostplayedTemp[i][1] < mostplayedTemp[j][1]) {
+            List<int> temp = mostplayedTemp[i];
+            mostplayedTemp[i] = mostplayedTemp[j];
+            mostplayedTemp[j] = temp;
+          }
+        }
+      }
+      mostplayedTemp = mostplayedTemp.sublist(0, 10);
+      for (List<int> element in mostplayedTemp) {
+        for (Songs song in allsongs) {
+          if (element[0] == song.id && element[1] > 3) {
+            mostPlayedList.add(song);
+          }
+        }
+      }
+    }
+    mostplayedDb.close();
   }
 }

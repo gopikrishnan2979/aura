@@ -1,11 +1,11 @@
 import 'package:aura/common_widget/favoritewidget.dart';
 import 'package:aura/common_widget/listtilecustom.dart';
+import 'package:aura/functions/player_function.dart';
 import 'package:aura/screens/commonscreen/add_to_playlist.dart';
 import 'package:aura/screens/favorite.dart';
 import 'package:aura/screens/splash_screen.dart';
 import 'package:aura/songs/songs.dart';
 import 'package:flutter/material.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 
 class Search extends StatelessWidget {
@@ -96,55 +96,68 @@ class Search extends StatelessWidget {
     return ListView.builder(
       padding:
           EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.1),
-      itemBuilder: (context, index) => ListTileCustom(
-          index: index,
-          context: context,
-          leading: QueryArtworkWidget(
-            size: 3000,
-            quality: 100,
-            artworkQuality: FilterQuality.high,
-            artworkBorder: BorderRadius.circular(10),
-            artworkFit: BoxFit.cover,
-            id: data.value[index].id,
-            type: ArtworkType.AUDIO,
-            nullArtworkWidget: ClipRRect(
-              borderRadius: BorderRadius.circular(7),
-              child: Image.asset(
-                'assets/images/Happier.png',
+      itemBuilder: (context, index) => InkWell(
+        onTap: () {
+          Songs selectedsong = data.value[index];
+          int songindex = 0;
+          for (int i = 0; i < allsongs.length; i++) {
+            if (selectedsong == allsongs[i]) {
+              songindex = i;
+            }
+          }
+          playAudio(allsongs, songindex);
+        },
+        child: ListTileCustom(
+            index: index,
+            context: context,
+            leading: QueryArtworkWidget(
+              size: 3000,
+              quality: 100,
+              artworkQuality: FilterQuality.high,
+              artworkBorder: BorderRadius.circular(10),
+              artworkFit: BoxFit.cover,
+              id: data.value[index].id,
+              type: ArtworkType.AUDIO,
+              nullArtworkWidget: ClipRRect(
+                borderRadius: BorderRadius.circular(7),
+                child: Image.asset(
+                  'assets/images/Happier.png',
+                ),
               ),
             ),
-          ),
-          tilecolor: const Color(0xFF939DF5),
-          title: Text(
-            data.value[index].songname ?? 'Unknown',
-            style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
-                overflow: TextOverflow.ellipsis),
-          ),
-          subtitle: Text(
-            data.value[index].artist != null
-                ? '${data.value[index].artist}'
-                : 'Unknown',
-            style: const TextStyle(overflow: TextOverflow.ellipsis),
-          ),
-          trailing1: FavoriteButton(
-              isfav: favorite.value.contains(data.value[index]),
-              currentSong: data.value[index]),
-          trailing2: PopupMenuButton(
-            onSelected: (value) {
-              if (value == 0) {
-                Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) =>
-                      AddToPlaylist(addingsong: data.value[index]),
-                ));
-              }
-            },
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-            itemBuilder: (context) =>
-                const [PopupMenuItem(value: 0, child: Text('Add to playlist'))],
-          )),
+            tilecolor: const Color(0xFF939DF5),
+            title: Text(
+              data.value[index].songname ?? 'Unknown',
+              style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                  overflow: TextOverflow.ellipsis),
+            ),
+            subtitle: Text(
+              data.value[index].artist != null
+                  ? '${data.value[index].artist}'
+                  : 'Unknown',
+              style: const TextStyle(overflow: TextOverflow.ellipsis),
+            ),
+            trailing1: FavoriteButton(
+                isfav: favorite.value.contains(data.value[index]),
+                currentSong: data.value[index]),
+            trailing2: PopupMenuButton(
+              onSelected: (value) {
+                if (value == 0) {
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) =>
+                        AddToPlaylist(addingsong: data.value[index]),
+                  ));
+                }
+              },
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15)),
+              itemBuilder: (context) => const [
+                PopupMenuItem(value: 0, child: Text('Add to playlist'))
+              ],
+            )),
+      ),
       itemCount: data.value.length,
     );
   }
@@ -153,58 +166,64 @@ class Search extends StatelessWidget {
     return ListView.builder(
       padding:
           EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.1),
-      itemBuilder: (context, index) => ListTileCustom(
-          index: index,
-          context: context,
-          leading: QueryArtworkWidget(
-            size: 3000,
-            quality: 100,
-            artworkQuality: FilterQuality.high,
-            artworkBorder: BorderRadius.circular(10),
-            artworkFit: BoxFit.cover,
-            id: allsongs[index].id,
-            type: ArtworkType.AUDIO,
-            nullArtworkWidget: ClipRRect(
-              borderRadius: BorderRadius.circular(7),
-              child: Image.asset(
-                'assets/images/Happier.png',
+      itemBuilder: (context, index) => InkWell(
+        onTap: () {
+          playAudio(allsongs, index);
+        },
+        child: ListTileCustom(
+            index: index,
+            context: context,
+            leading: QueryArtworkWidget(
+              size: 3000,
+              quality: 100,
+              artworkQuality: FilterQuality.high,
+              artworkBorder: BorderRadius.circular(10),
+              artworkFit: BoxFit.cover,
+              id: allsongs[index].id,
+              type: ArtworkType.AUDIO,
+              nullArtworkWidget: ClipRRect(
+                borderRadius: BorderRadius.circular(7),
+                child: Image.asset(
+                  'assets/images/Happier.png',
+                ),
               ),
             ),
-          ),
-          tilecolor: const Color(0xFF939DF5),
-          title: Text(
-            allsongs[index].songname ?? 'Unknown',
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 16,
-              overflow: TextOverflow.ellipsis,
+            tilecolor: const Color(0xFF939DF5),
+            title: Text(
+              allsongs[index].songname ?? 'Unknown',
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
-          ),
-          subtitle: Text(
-            '${allsongs[index].artist}',
-            style: const TextStyle(
-              fontSize: 16,
-              overflow: TextOverflow.ellipsis,
+            subtitle: Text(
+              '${allsongs[index].artist}',
+              style: const TextStyle(
+                fontSize: 16,
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
-          ),
-          trailing1: FavoriteButton(
-            isfav: favorite.value.contains(allsongs[index]),
-            currentSong: allsongs[index],
-          ),
-          trailing2: PopupMenuButton(
-            onSelected: (value) {
-              if (value == 0) {
-                Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) =>
-                      AddToPlaylist(addingsong: allsongs[index]),
-                ));
-              }
-            },
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-            itemBuilder: (context) =>
-                [const PopupMenuItem(value: 0, child: Text('Add to playlist'))],
-          )),
+            trailing1: FavoriteButton(
+              isfav: favorite.value.contains(allsongs[index]),
+              currentSong: allsongs[index],
+            ),
+            trailing2: PopupMenuButton(
+              onSelected: (value) {
+                if (value == 0) {
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) =>
+                        AddToPlaylist(addingsong: allsongs[index]),
+                  ));
+                }
+              },
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15)),
+              itemBuilder: (context) => [
+                const PopupMenuItem(value: 0, child: Text('Add to playlist'))
+              ],
+            )),
+      ),
       itemCount: allsongs.length,
     );
   }
@@ -215,12 +234,10 @@ class Search extends StatelessWidget {
             .toLowerCase()
             .contains(querry.toLowerCase().trim()))
         .toList();
-    // for(Songs elements in allsongs){
-    //   if(elements.songname){
-    //     add
-    //   }
-    // }
+    for (Songs elements in allsongs) {
+      if (elements.songname!
+          .toLowerCase()
+          .contains(querry.toLowerCase().trim())) {}
+    }
   }
-
-
 }

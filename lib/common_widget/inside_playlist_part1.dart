@@ -1,5 +1,5 @@
-import 'package:aura/screens/homescreen.dart';
-import 'package:aura/screens/play_screen.dart';
+import 'package:aura/functions/player_function.dart';
+import 'package:aura/screens/mini_player.dart';
 import 'package:aura/screens/playlist_scrn.dart';
 import 'package:flutter/material.dart';
 
@@ -41,27 +41,31 @@ class PlaylistInsidePart1 extends StatelessWidget {
                   ),
                 ],
               ),
-              InkWell(
-                onTap: () {
-                  if(playListNotifier.value[currentplaylistindex].container.isNotEmpty){
-                    player.stop();
-                  //playlist playing from here whole playlist songs have to be played
-                  Navigator.of(context).pushReplacement(MaterialPageRoute(
-                    builder: (context) => PlayingScreen(
-                        playinglistSongs: playListNotifier
-                            .value[currentplaylistindex].container,
-                        index: 0),
-                  ));}
-                },
-                child: const CircleAvatar(
-                  radius: 30,
-                  backgroundColor: Color(0xFF081DDF),
-                  child: Icon(
-                    Icons.play_arrow_rounded,
-                    size: 50,
-                  ),
-                ),
-              )
+              playListNotifier.value[currentplaylistindex].container.isEmpty
+                  ? const SizedBox()
+                  : InkWell(
+                      onTap: () {
+                        playAudio(
+                            playListNotifier
+                                .value[currentplaylistindex].container,
+                            0);
+                        showModalBottomSheet(
+                            enableDrag: false,
+                            context: context,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12)),
+                            backgroundColor: const Color(0xFF202EAF),
+                            builder: (context) => const MiniPlayer());
+                      },
+                      child: const CircleAvatar(
+                        radius: 30,
+                        backgroundColor: Color(0xFF081DDF),
+                        child: Icon(
+                          Icons.play_arrow_rounded,
+                          size: 50,
+                        ),
+                      ),
+                    )
             ],
           ),
         ),

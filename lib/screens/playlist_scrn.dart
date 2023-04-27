@@ -8,8 +8,8 @@ import 'package:flutter/material.dart';
 
 ValueNotifier<List<EachPlaylist>> playListNotifier = ValueNotifier([]);
 
-class Playlist extends StatelessWidget {
-  const Playlist({super.key});
+class PlaylistScrn extends StatelessWidget {
+  const PlaylistScrn({super.key});
   @override
   Widget build(BuildContext context) {
     final GlobalKey rebuildkey = GlobalKey();

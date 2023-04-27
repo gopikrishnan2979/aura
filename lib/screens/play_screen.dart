@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:aura/common_widget/favoritewidget.dart';
 import 'package:aura/common_widget/playscrnwidget/playscrn_widget.dart';
+import 'package:aura/functions/player_function.dart';
 import 'package:aura/screens/commonscreen/add_to_playlist.dart';
 import 'package:aura/screens/favorite.dart';
 import 'package:aura/screens/homescreen.dart';
@@ -14,17 +15,11 @@ import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:marquee/marquee.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 
-
-int? playingId;
 Songs? currentlyplaying;
 List<Audio> playinglistAudio = [];
 
 class PlayingScreen extends StatefulWidget {
-  final int index;
-
-  final List<Songs> playinglistSongs;
-  const PlayingScreen(
-      {super.key, required this.playinglistSongs, required this.index});
+  const PlayingScreen({super.key});
 
   @override
   State<PlayingScreen> createState() => _PlayingScreenState();
@@ -32,22 +27,8 @@ class PlayingScreen extends StatefulWidget {
 
 class _PlayingScreenState extends State<PlayingScreen> {
   @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    openplayer();
-  }
-
-  openplayer() async {
-    await player.open(
-      Playlist(audios: playinglistAudio, startIndex: widget.index),
-      autoStart: true,
-      showNotification: true,notificationSettings: NotificationSettings(nextEnabled: true, prevEnabled: true,seekBarEnabled: true,playPauseEnabled: true)
-    );
-  }
-
-  @override
   Widget build(BuildContext context) {
+    bool isenteredtomostplayed = false;
     return SafeArea(
         child: Scaffold(
       body: Container(
@@ -67,13 +48,8 @@ class _PlayingScreenState extends State<PlayingScreen> {
               )
             : player.builderCurrent(
                 builder: (context, playing) {
-                  playingId = int.parse(playing.audio.audio.metas.id!);
-                  for (Songs song in allsongs) {
-                    if (song.id == playingId) {
-                      currentlyplaying = song;
-                      break;
-                    }
-                  }
+                  int id = int.parse(playing.audio.audio.metas.id!);
+                  currentsongfinder(id);
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -206,6 +182,17 @@ class _PlayingScreenState extends State<PlayingScreen> {
                                 Duration currentposition =
                                     infos.currentPosition;
                                 Duration totalduration = infos.duration;
+                                double currentposvalue =
+                                    currentposition.inMilliseconds.toDouble();
+                                double totalvalue =
+                                    totalduration.inMilliseconds.toDouble();
+                                double value = currentposvalue / totalvalue;
+                                if (!isenteredtomostplayed && value>0.5) {
+                                  int id =
+                                      int.parse(playing.audio.audio.metas.id!);
+                                  currentsongfinder(id);
+                                  isenteredtomostplayed = true;
+                                }
                                 return ProgressBar(
                                   timeLabelTextStyle:
                                       const TextStyle(color: Colors.white),
@@ -240,10 +227,10 @@ class _PlayingScreenState extends State<PlayingScreen> {
                                         currentSong: currentlyplaying!)),
                                 IconButton(
                                     onPressed: () {
-                                      Timer(const Duration(milliseconds: 800),
-                                          () {});
-                                      setState(() {
-                                        player.previous();
+                                      Future.delayed(
+                                          const Duration(milliseconds: 800));
+                                      setState(() async {
+                                        await player.previous();
                                       });
                                     },
                                     icon: const Icon(
@@ -254,10 +241,10 @@ class _PlayingScreenState extends State<PlayingScreen> {
                                 const PlayPause(),
                                 IconButton(
                                     onPressed: () {
-                                      Timer(const Duration(milliseconds: 800),
-                                          () {});
-                                      setState(() {
-                                        player.next();
+                                      Future.delayed(
+                                          const Duration(milliseconds: 800));
+                                      setState(() async {
+                                        await player.next();
                                       });
                                     },
                                     icon: const Icon(
@@ -275,7 +262,7 @@ class _PlayingScreenState extends State<PlayingScreen> {
                                               addingsong: currentlyplaying!),
                                         ));
                                       },
-                                      icon: Icon(
+                                      icon: const Icon(
                                         Icons.playlist_add_rounded,
                                         size: 40,
                                         color: Colors.white,
@@ -285,7 +272,7 @@ class _PlayingScreenState extends State<PlayingScreen> {
                             )
                           ],
                         ),
-                      )
+                      ),
                     ],
                   );
                 },

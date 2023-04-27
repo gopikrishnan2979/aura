@@ -1,8 +1,11 @@
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:aura/common_widget/favoritewidget.dart';
+
 import 'package:aura/common_widget/listtilecustom.dart';
+import 'package:aura/functions/player_function.dart';
 import 'package:aura/screens/commonscreen/add_to_playlist.dart';
 import 'package:aura/screens/favorite.dart';
+import 'package:aura/screens/mini_player.dart';
 import 'package:aura/screens/most_played_scrn.dart';
 import 'package:aura/screens/play_screen.dart';
 import 'package:aura/screens/recent_scrn.dart';
@@ -13,81 +16,114 @@ import 'package:on_audio_query/on_audio_query.dart';
 
 AssetsAudioPlayer player = AssetsAudioPlayer();
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
   @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  @override
   Widget build(BuildContext context) {
+    if (currentlyplaying != null) {
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        showBottomSheet(
+            enableDrag: false,
+            context: context,
+            backgroundColor: const Color(0xFF202EAF),
+            builder: (context) => const MiniPlayer());
+      });
+    }
     return SafeArea(
         child: Scaffold(
-      backgroundColor: const Color(0xFF202EB0),
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topRight,
-            end: Alignment.centerLeft,
-            colors: [Color(0xFF000000), Color(0xFF0B0E38), Color(0xFF202EAF)],
-          ),
-        ),
-        child: allsongs.isEmpty
-            ? songlistempty()
-            : SingleChildScrollView(
-                child: Padding(
-                  padding:
-                      const EdgeInsets.only(left: 10.0, right: 10, top: 15),
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(top: 4.0, bottom: 4),
-                        child: icontextheading(
-                            FontAwesomeIcons.layerGroup, 'Library', context),
-                      ),
-                      Row(
-                        // Library row section
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          InkWell(
-                            onTap: () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => const MostPlayedScrn(),
-                              ));
-                            },
-                            child: librarycard(
-                                context: context,
-                                imgsrc: 'assets/images/mostplayedbg.png',
-                                title: 'Most Played'),
-                          ),
-                          InkWell(
-                            child: librarycard(
-                                context: context,
-                                imgsrc: 'assets/images/recentbg.png',
-                                title: 'Recent'),
-                            onTap: () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => const RecentScrn(),
-                              ));
-                            },
-                          )
-                        ],
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      icontextheading(FontAwesomeIcons.music, 'Songs', context),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      // creates the list in homescreen
-                      listtile(),
-                      const SizedBox(
-                        height: 80,
-                      )
-                    ],
+            backgroundColor: const Color(0xFF202EB0),
+            body: ValueListenableBuilder(
+              valueListenable: favorite,
+              builder: (context, value, child) {
+                return Container(
+                  decoration: const BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topRight,
+                      end: Alignment.centerLeft,
+                      colors: [
+                        Color(0xFF000000),
+                        Color(0xFF0B0E38),
+                        Color(0xFF202EAF)
+                      ],
+                    ),
                   ),
-                ),
-              ),
-      ),
-    ));
+                  child: allsongs.isEmpty
+                      ? songlistempty()
+                      : SingleChildScrollView(
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                                left: 10.0, right: 10, top: 15),
+                            child: Column(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      top: 4.0, bottom: 4),
+                                  child: icontextheading(
+                                      FontAwesomeIcons.layerGroup,
+                                      'Library',
+                                      context),
+                                ),
+                                Row(
+                                  // Library row section
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
+                                  children: [
+                                    InkWell(
+                                      onTap: () {
+                                        Navigator.of(context)
+                                            .push(MaterialPageRoute(
+                                          builder: (context) =>
+                                              const MostPlayedScrn(),
+                                        ));
+                                      },
+                                      child: librarycard(
+                                          context: context,
+                                          imgsrc:
+                                              'assets/images/mostplayedbg.png',
+                                          title: 'Most Played'),
+                                    ),
+                                    InkWell(
+                                      child: librarycard(
+                                          context: context,
+                                          imgsrc: 'assets/images/recentbg.png',
+                                          title: 'Recent'),
+                                      onTap: () {
+                                        Navigator.of(context)
+                                            .push(MaterialPageRoute(
+                                          builder: (context) =>
+                                              const RecentScrn(),
+                                        ));
+                                      },
+                                    )
+                                  ],
+                                ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+
+                                icontextheading(
+                                    FontAwesomeIcons.music, 'Songs', context),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                // creates the list in homescreen
+                                listtile(),
+                                const SizedBox(
+                                  height: 80,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                );
+              },
+            )));
   }
 
   Widget icontextheading(icon, String title, context) {
@@ -155,24 +191,11 @@ class HomeScreen extends StatelessWidget {
     return ListView.builder(
       physics: const NeverScrollableScrollPhysics(),
       shrinkWrap: true,
-      //count of tile
       itemBuilder: (context, index) => InkWell(
           onTap: () {
-            player.stop();
-            playinglistAudio.clear();
-            for (int i = 0; i < allsongs.length; i++) {
-              playinglistAudio.add(Audio.file(allsongs[i].songurl!,
-                  metas: Metas(
-                    title: allsongs[i].songname,
-                    artist: allsongs[i].artist,
-                    id: allsongs[i].id.toString(),
-                  )));
-            }
 
-            Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) =>
-                  PlayingScreen(playinglistSongs: allsongs, index: index),
-            ));
+            playAudio(allsongs, index);
+            setState(() {});
           },
           child: ListTileCustom(
             context: context,
@@ -181,7 +204,7 @@ class HomeScreen extends StatelessWidget {
               size: 3000,
               quality: 100,
               artworkQuality: FilterQuality.high,
-              artworkBorder: BorderRadius.circular(10),
+              artworkBorder: BorderRadius.circular(7),
               artworkFit: BoxFit.cover,
               id: allsongs[index].id,
               type: ArtworkType.AUDIO,

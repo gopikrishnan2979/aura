@@ -1,6 +1,6 @@
-
 import 'package:aura/common_widget/inside_playlist_part1.dart';
 import 'package:aura/common_widget/inside_playlist_part2.dart';
+import 'package:aura/common_widget/listtilecustom.dart';
 
 import 'package:aura/common_widget/playlist_icon_playlist_text.dart';
 
@@ -9,12 +9,11 @@ import 'package:aura/screens/playlist_scrn.dart';
 import 'package:aura/screens/splash_screen.dart';
 
 import 'package:flutter/material.dart';
+import 'package:on_audio_query/on_audio_query.dart';
 
 class InsidePlaylist extends StatelessWidget {
-
   final int currentplaylistindex;
-  const InsidePlaylist(
-      {super.key, required this.currentplaylistindex});
+  const InsidePlaylist({super.key, required this.currentplaylistindex});
 
   @override
   Widget build(BuildContext context) {
@@ -50,20 +49,21 @@ class InsidePlaylist extends StatelessWidget {
                                 size: 30,
                               )),
                           IconButton(
-                              onPressed: () {
-                                showModalBottomSheet(
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(9)),
-                                    backgroundColor: Color(0xFF202EAF),
-                                    context: context,
-                                    builder: (context) =>
-                                        bottomsheetallsongs(context));
-                              },
-                              icon: const Icon(
-                                Icons.add,
-                                color: Colors.white,
-                                size: 30,
-                              ),)
+                            onPressed: () {
+                              showModalBottomSheet(
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(9)),
+                                  backgroundColor: const Color(0xFF0C113F),
+                                  context: context,
+                                  builder: (context) =>
+                                      bottomsheetallsongstemp(context));
+                            },
+                            icon: const Icon(
+                              Icons.add,
+                              color: Colors.white,
+                              size: 30,
+                            ),
+                          )
                         ],
                       ),
                     ),
@@ -85,7 +85,6 @@ class InsidePlaylist extends StatelessWidget {
                         ),
                       )
                     : PlaylistInsidePart2(
-
                         currentplaylistindex: currentplaylistindex,
                       )
               ],
@@ -95,6 +94,69 @@ class InsidePlaylist extends StatelessWidget {
       ),
     );
   }
+
+  bottomsheetallsongstemp(BuildContext context) {
+    return Container(
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            Color.fromARGB(255, 240, 191, 135),
+            Color.fromARGB(255, 255, 255, 255)
+          ],
+        ),
+      ),
+      height: MediaQuery.of(context).size.height * 0.6,
+      child: ListView.builder(
+        itemBuilder: (context, index) {
+          return Padding(
+            padding: const EdgeInsets.only(left: 8.0, right: 8),
+            child: ListTileCustom(
+              index: index,
+              context: context,
+              leading: QueryArtworkWidget(
+                size: 3000,
+                quality: 100,
+                artworkQuality: FilterQuality.high,
+                artworkBorder: BorderRadius.circular(7),
+                artworkFit: BoxFit.cover,
+                id: allsongs[index].id,
+                type: ArtworkType.AUDIO,
+                nullArtworkWidget: ClipRRect(
+                  borderRadius: BorderRadius.circular(7),
+                  child: Image.asset(
+                    'assets/images/Happier.png',
+                  ),
+                ),
+              ),
+              title: Text(
+                allsongs[index].songname ?? 'Unknown',
+                style: const TextStyle(
+                  overflow: TextOverflow.ellipsis,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
+              ),
+              subtitle: Text(
+                allsongs[index].artist != null
+                    ? '${allsongs[index].artist}'
+                    : 'Unknown',
+                style: const TextStyle(overflow: TextOverflow.ellipsis),
+              ),
+              trailing2: PlaylistIcon(
+                  playlist: playListNotifier.value[currentplaylistindex],
+                  index: index,
+                  currentplaylistindex: currentplaylistindex),
+              tilecolor: const Color(0xFFF5B265),
+            ),
+          );
+        },
+        itemCount: allsongs.length,
+      ),
+    );
+  }
+ 
 
   bottomsheetallsongs(BuildContext context) {
     return SizedBox(

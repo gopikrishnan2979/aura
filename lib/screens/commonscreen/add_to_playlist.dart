@@ -7,8 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class AddToPlaylist extends StatelessWidget {
-  Songs addingsong;
-  AddToPlaylist({super.key, required this.addingsong});
+  final Songs addingsong;
+  const AddToPlaylist({super.key, required this.addingsong});
 
   @override
   Widget build(BuildContext context) {

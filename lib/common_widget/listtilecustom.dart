@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 
 class ListTileCustom extends StatelessWidget {
-  int index;
-  BuildContext context;
-  Widget? leading;
-  Widget? title;
-  Widget? subtitle;
-  Widget? trailing1;
-  Widget? trailing2;
-  Color? tilecolor;
-  ListTileCustom(
+  final int index;
+  final BuildContext context;
+  final Widget? leading;
+  final Widget? title;
+  final Widget? subtitle;
+  final Widget? trailing1;
+  final Widget? trailing2;
+  final Color? tilecolor;
+  const ListTileCustom(
       {super.key,
       required this.index,
       required this.context,
@@ -76,7 +76,7 @@ class ListTileCustom extends StatelessWidget {
               ),
               trailing1 != null
                   ? Expanded(child: Center(child: trailing1))
-                  : const Expanded(child: SizedBox()),
+                  : const SizedBox(),
               trailing2 != null
                   ? Expanded(
                       child: Center(

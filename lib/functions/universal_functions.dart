@@ -14,7 +14,6 @@ Future playlistcreating(playlistName) async {
 
 Future playlistaddDB(Songs addingsong, String playlistName) async {
   Box<PlaylistClass> playlistdb = await Hive.openBox('playlist');
-
   for (PlaylistClass element in playlistdb.values) {
     if (element.playlistName == playlistName) {
       var key = element.key;
