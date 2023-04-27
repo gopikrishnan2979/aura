@@ -11,19 +11,9 @@ import 'package:flutter/material.dart';
 ValueNotifier<List<EachPlaylist>> playListNotifier = ValueNotifier([]);
 
 class PlaylistScrn extends StatelessWidget {
-  
   const PlaylistScrn({super.key});
   @override
   Widget build(BuildContext context) {
-     if (currentlyplaying != null) {
-      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-        showBottomSheet(
-            enableDrag: false,
-            context: context,
-            backgroundColor: const Color(0xFF202EAF),
-            builder: (context) => const MiniPlayer());
-      });
-    }
     final GlobalKey rebuildkey = GlobalKey();
     return Scaffold(
       backgroundColor: const Color(0xFF202EB0),
@@ -38,9 +28,20 @@ class PlaylistScrn extends StatelessWidget {
         ),
         child: ValueListenableBuilder(
             valueListenable: playListNotifier,
-            builder: (context, value, child) => playListNotifier.value.isEmpty
-                ? playlistempty()
-                : gridcard(value, context, rebuildkey)),
+            builder: (context, value, child) {
+              if (currentlyplaying != null) {
+                WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                  showBottomSheet(
+                      enableDrag: false,
+                      context: context,
+                      backgroundColor: const Color(0xFF202EAF),
+                      builder: (context) => const MiniPlayer());
+                });
+              }
+              return playListNotifier.value.isEmpty
+                  ? playlistempty()
+                  : gridcard(value, context, rebuildkey);
+            }),
       ),
     );
   }

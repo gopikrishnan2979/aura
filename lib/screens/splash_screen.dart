@@ -18,9 +18,10 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
 
-    Timer(const Duration(milliseconds: 2300), () async {
+    Timer(const Duration(milliseconds: 2100), () async {
       FetchSongs fetchsong = FetchSongs();
       await fetchsong.songfetch();
+      if (!context.mounted) return;
       Navigator.of(context).pushReplacement(MaterialPageRoute(
         builder: (context) => const NavigatorScrn(),
       ));

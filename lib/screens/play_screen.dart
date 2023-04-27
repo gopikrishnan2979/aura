@@ -249,7 +249,7 @@ class _PlayingScreenState extends State<PlayingScreen> {
                                 IconButton(
                                     onPressed: () {
                                       Future.delayed(
-                                          const Duration(milliseconds: 800));
+                                          const Duration(seconds: 1));
                                       setState(() async {
                                         await player.previous();
                                       });
@@ -263,7 +263,7 @@ class _PlayingScreenState extends State<PlayingScreen> {
                                 IconButton(
                                     onPressed: () {
                                       Future.delayed(
-                                          const Duration(milliseconds: 800));
+                                          const Duration(seconds: 1));
                                       setState(() {
                                         player.next();
                                       });

@@ -15,15 +15,6 @@ class Favorite extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-     if (currentlyplaying != null) {
-      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-        showBottomSheet(
-            enableDrag: false,
-            context: context,
-            backgroundColor: const Color(0xFF202EAF),
-            builder: (context) => const MiniPlayer());
-      });
-    }
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 20, 30, 124),
       body: Container(
@@ -49,68 +40,81 @@ class Favorite extends StatelessWidget {
                         right: 10,
                         bottom: MediaQuery.of(context).size.height * 0.1),
                     itemCount: favorite.value.length,
-                    itemBuilder: (context, index) => InkWell(
-                      onTap: () {
-                        playAudio(favorite.value, index);
-                      },
-                      child: ListTileCustom(
-                        index: index,
-                        context: context,
-                        leading: QueryArtworkWidget(
-                          size: 3000,
-                          quality: 100,
-                          artworkQuality: FilterQuality.high,
-                          artworkBorder: BorderRadius.circular(10),
-                          artworkFit: BoxFit.cover,
-                          id: favorite.value[index].id,
-                          type: ArtworkType.AUDIO,
-                          nullArtworkWidget: ClipRRect(
-                            borderRadius: BorderRadius.circular(7),
-                            child: Image.asset(
-                              'assets/images/Happier.png',
+                    itemBuilder: (context, index) {
+                      if (currentlyplaying != null) {
+                        WidgetsBinding.instance
+                            .addPostFrameCallback((timeStamp) {
+                          showBottomSheet(
+                              enableDrag: false,
+                              context: context,
+                              backgroundColor: const Color(0xFF202EAF),
+                              builder: (context) => const MiniPlayer());
+                        });
+                      }
+                      return InkWell(
+                        onTap: () {
+                          playAudio(favorite.value, index);
+                          favorite.notifyListeners();
+                        },
+                        child: ListTileCustom(
+                          index: index,
+                          context: context,
+                          leading: QueryArtworkWidget(
+                            size: 3000,
+                            quality: 100,
+                            artworkQuality: FilterQuality.high,
+                            artworkBorder: BorderRadius.circular(10),
+                            artworkFit: BoxFit.cover,
+                            id: favorite.value[index].id,
+                            type: ArtworkType.AUDIO,
+                            nullArtworkWidget: ClipRRect(
+                              borderRadius: BorderRadius.circular(7),
+                              child: Image.asset(
+                                'assets/images/Happier.png',
+                              ),
                             ),
                           ),
+                          tilecolor: const Color(0xFF939DF5),
+                          title: Text(
+                            favorite.value[index].songname ?? 'Unknown',
+                            style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 15,
+                                overflow: TextOverflow.ellipsis),
+                          ),
+                          subtitle: Text(
+                            favorite.value[index].artist != null
+                                ? '${favorite.value[index].artist}'
+                                : 'Unknown',
+                            style: const TextStyle(
+                                overflow: TextOverflow.ellipsis, fontSize: 13),
+                          ),
+                          trailing1: FavoriteButton(
+                            isfav: true,
+                            currentSong: favorite.value[index],
+                          ),
+                          trailing2: PopupMenuButton(
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(15)),
+                            icon: const Icon(Icons.more_vert),
+                            itemBuilder: (context) => [
+                              const PopupMenuItem(
+                                value: 0,
+                                child: Text(
+                                  'Add to playlist',
+                                  style: TextStyle(color: Colors.black),
+                                ),
+                              )
+                            ],
+                            onSelected: (value) =>
+                                Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => AddToPlaylist(
+                                  addingsong: favorite.value[index]),
+                            )),
+                          ),
                         ),
-                        tilecolor: const Color(0xFF939DF5),
-                        title: Text(
-                          favorite.value[index].songname ?? 'Unknown',
-                          style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 15,
-                              overflow: TextOverflow.ellipsis),
-                        ),
-                        subtitle: Text(
-                          favorite.value[index].artist != null
-                              ? '${favorite.value[index].artist}'
-                              : 'Unknown',
-                          style: const TextStyle(
-                              overflow: TextOverflow.ellipsis, fontSize: 13),
-                        ),
-                        trailing1: FavoriteButton(
-                          isfav: true,
-                          currentSong: favorite.value[index],
-                        ),
-                        trailing2: PopupMenuButton(
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15)),
-                          icon: const Icon(Icons.more_vert),
-                          itemBuilder: (context) => [
-                            const PopupMenuItem(
-                              value: 0,
-                              child: Text(
-                                'Add to playlist',
-                                style: TextStyle(color: Colors.black),
-                              ),
-                            )
-                          ],
-                          onSelected: (value) =>
-                              Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => AddToPlaylist(
-                                addingsong: favorite.value[index]),
-                          )),
-                        ),
-                      ),
-                    ),
+                      );
+                    },
                   ),
           )),
     );

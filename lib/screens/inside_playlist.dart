@@ -41,6 +41,7 @@ class InsidePlaylist extends StatelessWidget {
                         children: [
                           IconButton(
                               onPressed: () {
+                                playListNotifier.notifyListeners();
                                 Navigator.pop(context);
                               },
                               icon: const Icon(
@@ -156,7 +157,6 @@ class InsidePlaylist extends StatelessWidget {
       ),
     );
   }
- 
 
   bottomsheetallsongs(BuildContext context) {
     return SizedBox(

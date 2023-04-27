@@ -26,21 +26,21 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
-    if (currentlyplaying != null) {
-      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-        showBottomSheet(
-            enableDrag: false,
-            context: context,
-            backgroundColor: const Color(0xFF202EAF),
-            builder: (context) => const MiniPlayer());
-      });
-    }
     return SafeArea(
         child: Scaffold(
             backgroundColor: const Color(0xFF202EB0),
             body: ValueListenableBuilder(
               valueListenable: favorite,
               builder: (context, value, child) {
+                if (currentlyplaying != null) {
+                  WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                    showBottomSheet(
+                        enableDrag: false,
+                        context: context,
+                        backgroundColor: const Color(0xFF202EAF),
+                        builder: (context) => const MiniPlayer());
+                  });
+                }
                 return Container(
                   decoration: const BoxDecoration(
                     gradient: LinearGradient(

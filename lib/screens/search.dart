@@ -15,15 +15,6 @@ class Search extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (currentlyplaying != null) {
-      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-        showBottomSheet(
-            enableDrag: false,
-            context: context,
-            backgroundColor: const Color(0xFF202EAF),
-            builder: (context) => const MiniPlayer());
-      });
-    }
     ValueNotifier<List<Songs>> data = ValueNotifier([]);
     final TextEditingController searchController = TextEditingController();
     return Scaffold(
@@ -69,13 +60,15 @@ class Search extends StatelessWidget {
                       ),
                       ValueListenableBuilder(
                         valueListenable: data,
-                        builder: (context, value, child) => Expanded(
-                            child: searchController.text.isEmpty ||
-                                    searchController.text.trim().isEmpty
-                                ? fullListshow(context)
-                                : data.value.isEmpty
-                                    ? searchisempty()
-                                    : searchfound(context, data)),
+                        builder: (context, value, child) {
+                          return Expanded(
+                              child: searchController.text.isEmpty ||
+                                      searchController.text.trim().isEmpty
+                                  ? fullListshow(context, data)
+                                  : data.value.isEmpty
+                                      ? searchisempty()
+                                      : searchfound(context, data));
+                        },
                       )
                     ],
                   ),
@@ -116,7 +109,15 @@ class Search extends StatelessWidget {
               songindex = i;
             }
           }
+          FocusScopeNode currentFocus = FocusScope.of(context);
+
+          if (!currentFocus.hasPrimaryFocus) {
+            currentFocus.unfocus();
+          }
           playAudio(allsongs, songindex);
+          Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => const PlayingScreen(),
+          ));
         },
         child: ListTileCustom(
             index: index,
@@ -174,13 +175,21 @@ class Search extends StatelessWidget {
     );
   }
 
-  Widget fullListshow(context) {
+  Widget fullListshow(context, ValueNotifier data) {
     return ListView.builder(
       padding:
           EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.1),
       itemBuilder: (context, index) => InkWell(
         onTap: () {
+          FocusScopeNode currentFocus = FocusScope.of(context);
+
+          if (!currentFocus.hasPrimaryFocus) {
+            currentFocus.unfocus();
+          }
           playAudio(allsongs, index);
+          Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => const PlayingScreen(),
+          ));
         },
         child: ListTileCustom(
             index: index,
@@ -246,10 +255,5 @@ class Search extends StatelessWidget {
             .toLowerCase()
             .contains(querry.toLowerCase().trim()))
         .toList();
-    for (Songs elements in allsongs) {
-      if (elements.songname!
-          .toLowerCase()
-          .contains(querry.toLowerCase().trim())) {}
-    }
   }
 }

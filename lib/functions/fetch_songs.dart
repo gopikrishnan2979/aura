@@ -74,6 +74,7 @@ class FetchSongs {
         favdb.delete(key);
       }
     }
+
   }
 
   playlistfetch() async {
@@ -91,6 +92,7 @@ class FetchSongs {
       }
       playListNotifier.value.add(playlistfetch);
     }
+
   }
 
   mostplayedfetch() async {
@@ -123,6 +125,7 @@ class FetchSongs {
         }
       }
     }
+
   }
 
   recentfetch() async {

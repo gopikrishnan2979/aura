@@ -39,7 +39,7 @@ class _MiniPlayerState extends State<MiniPlayer> {
             builder: (context, playing) {
               int id = int.parse(playing.audio.audio.metas.id!);
               currentlyplayingfinder(id);
-             
+
               return Column(
                 children: [
                   Padding(
@@ -101,7 +101,7 @@ class _MiniPlayerState extends State<MiniPlayer> {
                         ),
                         InkWell(
                             onTap: () {
-                              Future.delayed(const Duration(milliseconds: 800));
+                              Future.delayed(const Duration(seconds: 1));
                               player.previous();
                             },
                             child: CircleAvatar(
@@ -134,7 +134,7 @@ class _MiniPlayerState extends State<MiniPlayer> {
                         ),
                         InkWell(
                             onTap: () {
-                              Future.delayed(const Duration(milliseconds: 800));
+                              Future.delayed(const Duration(seconds: 1));
                               player.next();
                             },
                             child: CircleAvatar(
