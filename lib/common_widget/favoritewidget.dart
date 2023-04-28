@@ -38,10 +38,12 @@ class _FavoriteButtonState extends State<FavoriteButton> {
               widget.isfav = false;
               snackbar(text: 'Removed from liked', color: Colors.red);
             }
-            favorite.notifyListeners();
-            recentList.notifyListeners();
-            mostPlayedList.notifyListeners();
-            playListNotifier.notifyListeners();
+            if (widget.color != null) {
+              favorite.notifyListeners();
+              recentList.notifyListeners();
+              mostPlayedList.notifyListeners();
+              playListNotifier.notifyListeners();
+            }
           });
         },
         child: Icon(

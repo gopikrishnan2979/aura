@@ -18,7 +18,7 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
 
-    Timer(const Duration(milliseconds: 2100), () async {
+    Timer(const Duration(milliseconds: 2010), () async {
       FetchSongs fetchsong = FetchSongs();
       await fetchsong.songfetch();
       if (!context.mounted) return;

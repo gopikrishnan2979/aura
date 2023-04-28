@@ -30,6 +30,7 @@ class PlayingScreen extends StatefulWidget {
 
 class _PlayingScreenState extends State<PlayingScreen> {
   bool isenteredtomostplayed = false;
+  bool nextprevdone = true;
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -247,12 +248,12 @@ class _PlayingScreenState extends State<PlayingScreen> {
                                             .contains(currentlyplaying),
                                         currentSong: currentlyplaying!)),
                                 IconButton(
-                                    onPressed: () {
-                                      Future.delayed(
-                                          const Duration(seconds: 1));
-                                      setState(() async {
+                                    onPressed: () async {
+                                      if (nextprevdone) {
+                                        nextprevdone = false;
                                         await player.previous();
-                                      });
+                                        nextprevdone = true;
+                                      }
                                     },
                                     icon: const Icon(
                                       Icons.skip_previous_rounded,
@@ -261,12 +262,12 @@ class _PlayingScreenState extends State<PlayingScreen> {
                                     )),
                                 const PlayPause(),
                                 IconButton(
-                                    onPressed: () {
-                                      Future.delayed(
-                                          const Duration(seconds: 1));
-                                      setState(() {
-                                        player.next();
-                                      });
+                                    onPressed: () async {
+                                      if (nextprevdone) {
+                                        nextprevdone = false;
+                                        await player.next();
+                                        nextprevdone = true;
+                                      }
                                     },
                                     icon: const Icon(
                                       Icons.skip_next_rounded,

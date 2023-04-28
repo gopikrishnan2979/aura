@@ -57,10 +57,10 @@ class InsidePlaylist extends StatelessWidget {
                                   backgroundColor: const Color(0xFF0C113F),
                                   context: context,
                                   builder: (context) =>
-                                      bottomsheetallsongstemp(context));
+                                      bottomsheetallsongs(context));
                             },
                             icon: const Icon(
-                              Icons.add,
+                              Icons.add_to_photos,
                               color: Colors.white,
                               size: 30,
                             ),
@@ -96,7 +96,7 @@ class InsidePlaylist extends StatelessWidget {
     );
   }
 
-  bottomsheetallsongstemp(BuildContext context) {
+  bottomsheetallsongs(BuildContext context) {
     return Container(
       decoration: const BoxDecoration(
         gradient: LinearGradient(
@@ -150,33 +150,6 @@ class InsidePlaylist extends StatelessWidget {
                   index: index,
                   currentplaylistindex: currentplaylistindex),
               tilecolor: const Color(0xFFF5B265),
-            ),
-          );
-        },
-        itemCount: allsongs.length,
-      ),
-    );
-  }
-
-  bottomsheetallsongs(BuildContext context) {
-    return SizedBox(
-      height: MediaQuery.of(context).size.height * 0.6,
-      child: ListView.builder(
-        itemBuilder: (context, index) {
-          return Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: ListTile(
-              tileColor: Color(0xFF939DF5),
-              title: Text(
-                allsongs[index].songname!,
-                style: const TextStyle(color: Color(0xFF202EAF)),
-              ),
-              trailing: PlaylistIcon(
-                  playlist: playListNotifier.value[currentplaylistindex],
-                  index: index,
-                  currentplaylistindex: currentplaylistindex),
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(7)),
             ),
           );
         },

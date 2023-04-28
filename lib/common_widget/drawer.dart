@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:share_plus/share_plus.dart';
 
 class DrawerWidget extends StatelessWidget {
-  DrawerWidget({super.key});
+  const DrawerWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +28,9 @@ class DrawerWidget extends StatelessWidget {
                     height: height * 0.025,
                   ),
                   InkWell(
-                    onTap: () {},
+                    onTap: () {
+                      Share.share('Check out this awesome app! https://example.com');
+                    },
                     child: const IconTextmerge(
                         icon: Icon(
                           Icons.share,
@@ -67,7 +70,7 @@ class DrawerWidget extends StatelessWidget {
                   padding: EdgeInsets.only(bottom: height * 0.05),
                   child: const Text(
                     'Version 1.0.0',
-                    style: TextStyle(color: Color(0xFF9C9C9C), fontSize: 20),
+                    style: TextStyle(color: Color(0xFF9C9C9C), fontSize: 13),
                   ),
                 ),
               ),

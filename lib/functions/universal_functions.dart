@@ -43,6 +43,7 @@ Future playlistremoveDB(Songs removingsong, String playlistName) async {
       break;
     }
   }
+  playListNotifier.notifyListeners();
 }
 
 Future playlistdelete(int index) async {

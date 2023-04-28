@@ -14,7 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 
-AssetsAudioPlayer player = AssetsAudioPlayer();
+AssetsAudioPlayer player = AssetsAudioPlayer.withId('0');
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -70,7 +70,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                       context),
                                 ),
                                 Row(
-                                  // Library row section
+                                  // Library  row section
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceAround,
                                   children: [

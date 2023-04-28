@@ -1,6 +1,7 @@
 import 'package:aura/common_widget/favoritewidget.dart';
 import 'package:aura/common_widget/listtilecustom.dart';
 import 'package:aura/functions/player_function.dart';
+import 'package:aura/functions/universal_functions.dart';
 import 'package:aura/screens/favorite.dart';
 import 'package:aura/screens/mini_player.dart';
 import 'package:aura/screens/playlist_scrn.dart';
@@ -80,12 +81,32 @@ class PlaylistInsidePart2 extends StatelessWidget {
               : 'Unknown',
           style: const TextStyle(overflow: TextOverflow.ellipsis, fontSize: 13),
         ),
-        trailing2: FavoriteButton(
+        trailing1: FavoriteButton(
           isfav: favorite.value.contains(
               playListNotifier.value[currentplaylistindex].container[idx]),
           currentSong:
               playListNotifier.value[currentplaylistindex].container[idx],
         ),
+        trailing2: PopupMenuButton(
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+            icon: const Icon(Icons.more_vert),
+            itemBuilder: (context) => [
+                  const PopupMenuItem(
+                    value: 0,
+                    child: Text(
+                      'Remove from playlist',
+                      style: TextStyle(color: Colors.black),
+                    ),
+                  )
+                ],
+            onSelected: (value) {
+              playlistremoveDB(
+                  playListNotifier.value[currentplaylistindex].container[idx],
+                  playlist.name);
+              playListNotifier.value[currentplaylistindex].container.remove(
+                  playListNotifier.value[currentplaylistindex].container[idx]);
+            }),
         tilecolor: const Color(0xFF939DF5),
       ),
     );

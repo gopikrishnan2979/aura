@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:aura/database/mostplayed/mostplayed_functions.dart';
 import 'package:aura/functions/player_function.dart';
@@ -8,18 +7,15 @@ import 'package:flutter/material.dart';
 import 'package:marquee/marquee.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 
-class MiniPlayer extends StatefulWidget {
+class MiniPlayer extends StatelessWidget {
   const MiniPlayer({
     super.key,
   });
   @override
-  State<MiniPlayer> createState() => _MiniPlayerState();
-}
-
-class _MiniPlayerState extends State<MiniPlayer> {
-  @override
   Widget build(BuildContext context) {
     bool isenteredtomostplayed = false;
+    
+    bool nextprevdone = true;
     return InkWell(
       onTap: () {
         // playing screen code have to be written here
@@ -100,9 +96,12 @@ class _MiniPlayerState extends State<MiniPlayer> {
                           ),
                         ),
                         InkWell(
-                            onTap: () {
-                              Future.delayed(const Duration(seconds: 1));
-                              player.previous();
+                            onTap: () async {
+                              if (nextprevdone) {
+                                nextprevdone = false;
+                                await player.previous();
+                                nextprevdone = true;
+                              }
                             },
                             child: CircleAvatar(
                               backgroundColor: const Color(0xFF0C113F),
@@ -118,7 +117,7 @@ class _MiniPlayerState extends State<MiniPlayer> {
                           builder: (context, isPlaying) {
                             return InkWell(
                                 onTap: () {
-                                  isPlaying = isPlaying = !isPlaying;
+                                  isPlaying = !isPlaying;
                                   player.playOrPause();
                                 },
                                 child: CircleAvatar(
@@ -133,9 +132,12 @@ class _MiniPlayerState extends State<MiniPlayer> {
                           },
                         ),
                         InkWell(
-                            onTap: () {
-                              Future.delayed(const Duration(seconds: 1));
-                              player.next();
+                            onTap: () async {
+                              if (nextprevdone) {
+                                nextprevdone = false;
+                                await player.next();
+                                nextprevdone = true;
+                              }
                             },
                             child: CircleAvatar(
                               backgroundColor: const Color(0xFF0C113F),

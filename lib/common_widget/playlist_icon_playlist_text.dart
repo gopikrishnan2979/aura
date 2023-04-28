@@ -31,19 +31,7 @@ class _PlaylistIconState extends State<PlaylistIcon> {
     return IconButton(
         onPressed: () {
           setState(() {
-            if (!playListNotifier.value[widget.currentplaylistindex].container
-                .contains(allsongs[widget.index])) {
-              playListNotifier.value[widget.currentplaylistindex].container
-                  .add(allsongs[widget.index]);
-              playlistaddDB(allsongs[widget.index],
-                  playListNotifier.value[widget.currentplaylistindex].name);
-              isadded = true;
-            } else {
-              playListNotifier.value[widget.currentplaylistindex].container
-                  .remove(allsongs[widget.index]);
-              playlistremoveDB(allsongs[widget.index], widget.playlist.name);
-              isadded = false;
-            }
+            addingOrRemoving();
           });
           playListNotifier.notifyListeners();
         },
@@ -51,12 +39,28 @@ class _PlaylistIconState extends State<PlaylistIcon> {
             ? const Icon(
                 Icons.remove,
                 size: 30,
-                color: Color.fromARGB(255, 255, 255, 255),
+                color: Color(0xFF202EAF),
               )
             : const Icon(
                 Icons.add,
                 size: 30,
                 color: Color.fromARGB(255, 255, 255, 255),
               ));
+  }
+
+  addingOrRemoving() {
+    if (!playListNotifier.value[widget.currentplaylistindex].container
+        .contains(allsongs[widget.index])) {
+      playlistaddDB(allsongs[widget.index],
+          playListNotifier.value[widget.currentplaylistindex].name);
+      playListNotifier.value[widget.currentplaylistindex].container
+          .add(allsongs[widget.index]);
+      isadded = true;
+    } else {
+      playlistremoveDB(allsongs[widget.index], widget.playlist.name);
+      playListNotifier.value[widget.currentplaylistindex].container
+          .remove(allsongs[widget.index]);
+      isadded = false;
+    }
   }
 }
