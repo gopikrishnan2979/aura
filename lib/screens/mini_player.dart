@@ -3,6 +3,7 @@ import 'package:aura/database/mostplayed/mostplayed_functions.dart';
 import 'package:aura/functions/player_function.dart';
 import 'package:aura/screens/homescreen.dart';
 import 'package:aura/screens/play_screen.dart';
+import 'package:aura/screens/playlist_scrn.dart';
 import 'package:flutter/material.dart';
 import 'package:marquee/marquee.dart';
 import 'package:on_audio_query/on_audio_query.dart';
@@ -14,7 +15,7 @@ class MiniPlayer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool isenteredtomostplayed = false;
-    
+
     bool nextprevdone = true;
     return InkWell(
       onTap: () {
@@ -71,7 +72,8 @@ class MiniPlayer extends StatelessWidget {
                                 child: Marquee(
                                   text: player.getCurrentAudioTitle,
                                   style: const TextStyle(
-                                      color: Colors.white, fontSize: 15),
+                                      color: Colors.white,
+                                      fontSize: songnamefontsize),
                                   velocity: 35,
                                   blankSpace: 20,
                                 ),
@@ -87,7 +89,7 @@ class MiniPlayer extends StatelessWidget {
                                     player.getCurrentAudioArtist,
                                     style: const TextStyle(
                                         color: Colors.white,
-                                        fontSize: 12,
+                                        fontSize: artistfontsize,
                                         overflow: TextOverflow.ellipsis),
                                   ),
                                 ),
@@ -162,9 +164,9 @@ class MiniPlayer extends StatelessWidget {
                             ),
                             child: PlayerBuilder.realtimePlayingInfos(
                               player: player,
-                              builder: (context, Infos) {
-                                Duration currentpos = Infos.currentPosition;
-                                Duration total = Infos.duration;
+                              builder: (context, infos) {
+                                Duration currentpos = infos.currentPosition;
+                                Duration total = infos.duration;
                                 double currentposvalue =
                                     currentpos.inMilliseconds.toDouble();
                                 double totalvalue =
@@ -180,7 +182,7 @@ class MiniPlayer extends StatelessWidget {
 
                                 return LinearProgressIndicator(
                                   backgroundColor: const Color(0xFF0C113F),
-                                  color: Colors.white,
+                                  color: Colors.green,
                                   minHeight: 2.5,
                                   value: value,
                                 );

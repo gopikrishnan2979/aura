@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 
 class GradientAppBar extends StatelessWidget {
   final double barHeight = 50.0;
-  List<Widget> action;
+  final List<Widget> action;
 
-  GradientAppBar({super.key, required this.action});
+  const GradientAppBar({super.key, required this.action});
 
   @override
   Widget build(BuildContext context) {

@@ -1,6 +1,5 @@
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:aura/common_widget/favoritewidget.dart';
-
 import 'package:aura/common_widget/listtilecustom.dart';
 import 'package:aura/functions/player_function.dart';
 import 'package:aura/screens/commonscreen/add_to_playlist.dart';
@@ -8,6 +7,7 @@ import 'package:aura/screens/favorite.dart';
 import 'package:aura/screens/mini_player.dart';
 import 'package:aura/screens/most_played_scrn.dart';
 import 'package:aura/screens/play_screen.dart';
+import 'package:aura/screens/playlist_scrn.dart';
 import 'package:aura/screens/recent_scrn.dart';
 import 'package:aura/screens/splash_screen.dart';
 import 'package:flutter/material.dart';
@@ -24,18 +24,30 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  double screenwidth = 0;
+  bool startAnimation = false;
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      setState(() {
+        startAnimation = true;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    screenwidth = MediaQuery.of(context).size.width;
     return SafeArea(
         child: Scaffold(
             backgroundColor: const Color(0xFF202EB0),
             body: ValueListenableBuilder(
-              valueListenable: favorite,
+              valueListenable: playListNotifier,
               builder: (context, value, child) {
                 if (currentlyplaying != null) {
                   WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
                     showBottomSheet(
-                        enableDrag: false,
                         context: context,
                         backgroundColor: const Color(0xFF202EAF),
                         builder: (context) => const MiniPlayer());
@@ -55,21 +67,26 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   child: allsongs.isEmpty
                       ? songlistempty()
-                      : SingleChildScrollView(
-                          child: Padding(
-                            padding: const EdgeInsets.only(
-                                left: 10.0, right: 10, top: 15),
-                            child: Column(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                      top: 4.0, bottom: 4),
-                                  child: icontextheading(
-                                      FontAwesomeIcons.layerGroup,
-                                      'Library',
-                                      context),
-                                ),
-                                Row(
+                      : Padding(
+                          padding: const EdgeInsets.only(
+                              left: 10.0, right: 10, top: 15),
+                          child: Column(
+                            children: [
+                              Padding(
+                                padding:
+                                    const EdgeInsets.only(top: 4.0, bottom: 4),
+                                child: icontextheading(
+                                    FontAwesomeIcons.layerGroup,
+                                    'Library',
+                                    context),
+                              ),
+                              AnimatedContainer(
+                                width: screenwidth,
+                                curve: Curves.easeInOut,
+                                duration: const Duration(milliseconds: 700),
+                                transform: Matrix4.translationValues(
+                                    startAnimation ? 0 : screenwidth, 0, 0),
+                                child: Row(
                                   // Library  row section
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceAround,
@@ -103,22 +120,19 @@ class _HomeScreenState extends State<HomeScreen> {
                                     )
                                   ],
                                 ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              ),
 
-                                icontextheading(
-                                    FontAwesomeIcons.music, 'Songs', context),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                // creates the list in homescreen
-                                listtile(),
-                                const SizedBox(
-                                  height: 80,
-                                ),
-                              ],
-                            ),
+                              icontextheading(
+                                  FontAwesomeIcons.music, 'Songs', context),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              // creates the list in homescreen
+                              listtile(),
+                            ],
                           ),
                         ),
                 );
@@ -129,12 +143,12 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget icontextheading(icon, String title, context) {
     return Row(
       children: [
-        FaIcon(icon, color: const Color(0xFFC8C8C8)),
+        FaIcon(icon, color: fontcolor),
         Padding(
           padding:
               EdgeInsets.only(left: MediaQuery.of(context).size.height * 0.01),
           child: Text(title,
-              style: const TextStyle(color: Color(0xFFC8C8C8), fontSize: 23)),
+              style: const TextStyle(color: fontcolor, fontSize: 19)),
         )
       ],
     );
@@ -169,7 +183,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Text(
                     title,
                     style:
-                        const TextStyle(color: Color(0xFFE8E8E8), fontSize: 18),
+                        const TextStyle(color: Color(0xFFE8E8E8), fontSize: 15),
                   ),
                 ),
               ))
@@ -188,73 +202,92 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   listtile() {
-    return ListView.builder(
-      physics: const NeverScrollableScrollPhysics(),
-      shrinkWrap: true,
-      itemBuilder: (context, index) => InkWell(
-          onTap: () {
-            playAudio(allsongs, index);
-            setState(() {});
-          },
-          child: ListTileCustom(
-            context: context,
-            index: index,
-            leading: QueryArtworkWidget(
-              size: 3000,
-              quality: 100,
-              artworkQuality: FilterQuality.high,
-              artworkBorder: BorderRadius.circular(7),
-              artworkFit: BoxFit.cover,
-              id: allsongs[index].id,
-              type: ArtworkType.AUDIO,
-              nullArtworkWidget: ClipRRect(
-                borderRadius: BorderRadius.circular(7),
-                child: Image.asset(
-                  'assets/images/Happier.png',
-                ),
-              ),
-            ),
-            title: Text(
-              allsongs[index].songname ?? 'Unknown',
-              style: const TextStyle(
-                overflow: TextOverflow.ellipsis,
-                fontWeight: FontWeight.bold,
-                fontSize: 15,
-              ),
-            ),
-            subtitle: Text(
-              allsongs[index].artist != null
-                  ? '${allsongs[index].artist}'
-                  : 'Unknown',
-              style: const TextStyle(
-                  overflow: TextOverflow.ellipsis, fontSize: 13),
-            ),
-            trailing1: FavoriteButton(
-              isfav: favorite.value.contains(allsongs[index]),
-              currentSong: allsongs[index],
-            ),
-            trailing2: PopupMenuButton(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15)),
-              icon: const Icon(Icons.more_vert),
-              itemBuilder: (context) => [
-                const PopupMenuItem(
-                  value: 0,
-                  child: Text(
-                    'Add to playlist',
-                    style: TextStyle(color: Colors.black),
+    return Expanded(
+      child: ListView.builder(
+        // physics: const NeverScrollableScrollPhysics(),
+        // shrinkWrap: true,
+        itemBuilder: (context, index) => AnimatedContainer(
+          width: screenwidth,
+          curve: Curves.easeInOut,
+          duration: Duration(milliseconds: 400 + (index * 100)),
+          transform:
+              Matrix4.translationValues(startAnimation ? 0 : screenwidth, 0, 0),
+          child: InkWell(
+              onTap: () {
+                playAudio(allsongs, index);
+                setState(() {});
+              },
+              child: ListTileCustom(
+                context: context,
+                index: index,
+                leading: QueryArtworkWidget(
+                  size: 3000,
+                  quality: 100,
+                  artworkQuality: FilterQuality.high,
+                  artworkBorder: BorderRadius.circular(7),
+                  artworkFit: BoxFit.cover,
+                  id: allsongs[index].id,
+                  type: ArtworkType.AUDIO,
+                  nullArtworkWidget: ClipRRect(
+                    borderRadius: BorderRadius.circular(7),
+                    child: Image.asset(
+                      'assets/images/Happier.png',
+                    ),
                   ),
-                )
-              ],
-              onSelected: (value) =>
-                  Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) =>
-                    AddToPlaylist(addingsong: allsongs[index]),
+                ),
+                title: Text(
+                  allsongs[index].songname ?? 'Unknown',
+                  style: const TextStyle(
+                    color: fontcolor,
+                    overflow: TextOverflow.ellipsis,
+                    fontWeight: FontWeight.bold,
+                    fontSize: songnamefontsize,
+                  ),
+                ),
+                subtitle: Text(
+                  allsongs[index].artist != null
+                      ? '${allsongs[index].artist}'
+                      : 'Unknown',
+                  style: const TextStyle(
+                      color: fontcolor,
+                      overflow: TextOverflow.ellipsis,
+                      fontSize: artistfontsize),
+                ),
+                trailing1: FavoriteButton(
+                  isfav: favorite.value.contains(allsongs[index]),
+                  currentSong: allsongs[index],
+                ),
+                trailing2: Theme(
+                  data: Theme.of(context)
+                      .copyWith(cardColor: const Color(0xFF87BEFF)),
+                  child: PopupMenuButton(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15)),
+                    icon: const Icon(
+                      Icons.more_vert,
+                      color: fontcolor,
+                    ),
+                    itemBuilder: (context) => [
+                      const PopupMenuItem(
+                        value: 0,
+                        child: Text(
+                          'Add to playlist',
+                          style: TextStyle(color: Colors.black),
+                        ),
+                      )
+                    ],
+                    onSelected: (value) =>
+                        Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) =>
+                          AddToPlaylist(addingsong: allsongs[index]),
+                    )),
+                  ),
+                ),
+                tilecolor: const Color(0xFF939DF5),
               )),
-            ),
-            tilecolor: const Color(0xFF939DF5),
-          )),
-      itemCount: allsongs.length,
+        ),
+        itemCount: allsongs.length,
+      ),
     );
   }
 }

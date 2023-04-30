@@ -34,38 +34,41 @@ class _NavigatorScrnState extends State<NavigatorScrn> {
   @override
   Widget build(BuildContext context) {
     Color color = const Color.fromARGB(255, 104, 197, 255);
-    return SafeArea(
-      child: Scaffold(
-        resizeToAvoidBottomInset: false,
-        body: Scaffold(
-          backgroundColor: backgroundcolor[screenindex],
-          drawer: DrawerWidget(),
-          appBar: PreferredSize(
-            preferredSize: Size(MediaQuery.of(context).size.width, 200),
-            child: appbarselector(screenindex, context),
-          ),
-          body: screens[screenindex],
-          bottomNavigationBar: CurvedNavigationBar(
-            items: [
-              FaIcon(FontAwesomeIcons.houseChimney,
-                  color: screenindex == 0 ? color : Colors.white),
-              Center(
-                  child: FaIcon(FontAwesomeIcons.indent,
-                      color: screenindex == 1 ? color : Colors.white)),
-              FaIcon(
-                Icons.favorite,
-                color: screenindex == 2 ? color : Colors.white,
-              ),
-              FaIcon(FontAwesomeIcons.magnifyingGlass,
-                  color: screenindex == 3 ? color : Colors.white)
-            ],
-            color: const Color(0xFF0C113F),
-            backgroundColor: const Color.fromARGB(0, 0, 0, 0),
-            onTap: (index) {
-              setState(() {
-                screenindex = index;
-              });
-            },
+    return Container(
+      color: const Color(0xFF0B0E38),
+      child: SafeArea(
+        child: Scaffold(
+          resizeToAvoidBottomInset: false,
+          body: Scaffold(
+            backgroundColor: backgroundcolor[screenindex],
+            drawer: const DrawerWidget(),
+            appBar: PreferredSize(
+              preferredSize: Size(MediaQuery.of(context).size.width, 200),
+              child: appbarselector(screenindex, context),
+            ),
+            body: screens[screenindex],
+            bottomNavigationBar: CurvedNavigationBar(
+              items: [
+                FaIcon(FontAwesomeIcons.houseChimney,
+                    color: screenindex == 0 ? color : Colors.white),
+                Center(
+                    child: FaIcon(FontAwesomeIcons.indent,
+                        color: screenindex == 1 ? color : Colors.white)),
+                FaIcon(
+                  Icons.favorite,
+                  color: screenindex == 2 ? color : Colors.white,
+                ),
+                FaIcon(FontAwesomeIcons.magnifyingGlass,
+                    color: screenindex == 3 ? color : Colors.white)
+              ],
+              color: const Color(0xFF0C113F),
+              backgroundColor: const Color.fromARGB(0, 0, 0, 0),
+              onTap: (index) {
+                setState(() {
+                  screenindex = index;
+                });
+              },
+            ),
           ),
         ),
       ),
@@ -103,7 +106,7 @@ class _NavigatorScrnState extends State<NavigatorScrn> {
         )
       ]);
     } else if (index == 2) {
-      return GradientAppBar(action: const [
+      return const GradientAppBar(action: [
         Padding(
           padding: EdgeInsets.only(right: 10.0),
           child: Text(
@@ -113,7 +116,7 @@ class _NavigatorScrnState extends State<NavigatorScrn> {
         )
       ]);
     } else {
-      return GradientAppBar(action: const [
+      return const GradientAppBar(action: [
         Padding(
           padding: EdgeInsets.only(right: 10.0),
           child: Text(

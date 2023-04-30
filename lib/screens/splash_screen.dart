@@ -17,15 +17,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-
-    Timer(const Duration(milliseconds: 2010), () async {
-      FetchSongs fetchsong = FetchSongs();
-      await fetchsong.songfetch();
-      if (!context.mounted) return;
-      Navigator.of(context).pushReplacement(MaterialPageRoute(
-        builder: (context) => const NavigatorScrn(),
-      ));
-    });
+    wait();
   }
 
   @override
@@ -36,5 +28,15 @@ class _SplashScreenState extends State<SplashScreen> {
         child: Image.asset('assets/images/AURA.gif'),
       ),
     );
+  }
+
+  wait() async {
+    FetchSongs fetchsong = FetchSongs();
+    await fetchsong.songfetch();
+    Timer(const Duration(seconds: 1), () {
+      Navigator.of(context).pushReplacement(MaterialPageRoute(
+        builder: (context) => const NavigatorScrn(),
+      ));
+    });
   }
 }

@@ -50,8 +50,8 @@ class FetchSongs {
       }
       await favfetch();
       await playlistfetch();
-      await mostplayedfetch();
       await recentfetch();
+      await mostplayedfetch();
     }
   }
 
@@ -63,7 +63,7 @@ class FetchSongs {
       int count = 0;
       for (var songs in allsongs) {
         if (favs.id == songs.id) {
-          favorite.value.add(songs);
+          favorite.value.insert(0, songs);
           break;
         } else {
           count++;
@@ -74,7 +74,6 @@ class FetchSongs {
         favdb.delete(key);
       }
     }
-
   }
 
   playlistfetch() async {
@@ -92,7 +91,6 @@ class FetchSongs {
       }
       playListNotifier.value.add(playlistfetch);
     }
-
   }
 
   mostplayedfetch() async {
@@ -108,7 +106,7 @@ class FetchSongs {
         mostplayedTemp.add([song.id, count]);
       }
       for (int i = 0; i < mostplayedTemp.length - 1; i++) {
-        for (int j = i; j < mostplayedTemp.length; j++) {
+        for (int j = i + 1; j < mostplayedTemp.length; j++) {
           if (mostplayedTemp[i][1] < mostplayedTemp[j][1]) {
             List<int> temp = mostplayedTemp[i];
             mostplayedTemp[i] = mostplayedTemp[j];
@@ -116,7 +114,11 @@ class FetchSongs {
           }
         }
       }
-      mostplayedTemp = mostplayedTemp.sublist(0, 10);
+      List<List<int>> temp = [];
+      for (int i = 0; i < mostplayedTemp.length && i < 10; i++) {
+        temp.add(mostplayedTemp[i]);
+      }
+      mostplayedTemp = temp;
       for (List<int> element in mostplayedTemp) {
         for (Songs song in allsongs) {
           if (element[0] == song.id && element[1] > 3) {
@@ -125,7 +127,6 @@ class FetchSongs {
         }
       }
     }
-
   }
 
   recentfetch() async {

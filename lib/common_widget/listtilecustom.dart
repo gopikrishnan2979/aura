@@ -9,6 +9,7 @@ class ListTileCustom extends StatelessWidget {
   final Widget? trailing1;
   final Widget? trailing2;
   final Color? tilecolor;
+  final bool isgradient;
   const ListTileCustom(
       {super.key,
       required this.index,
@@ -18,7 +19,8 @@ class ListTileCustom extends StatelessWidget {
       this.subtitle,
       this.trailing1,
       this.trailing2,
-      this.tilecolor});
+      this.tilecolor,
+      this.isgradient = true});
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +29,13 @@ class ListTileCustom extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
-            color: tilecolor ?? Colors.white),
+            color: tilecolor ?? Colors.white,
+            gradient: isgradient
+                ? const LinearGradient(colors: [
+                    Color.fromARGB(255, 0, 0, 0),
+                    Color.fromARGB(255, 10, 63, 148),
+                  ])
+                : null),
         child: Padding(
           padding: const EdgeInsets.all(8),
           child: Row(

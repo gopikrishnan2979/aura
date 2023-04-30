@@ -4,6 +4,7 @@ import 'package:aura/functions/player_function.dart';
 import 'package:aura/screens/commonscreen/add_to_playlist.dart';
 import 'package:aura/screens/mini_player.dart';
 import 'package:aura/screens/play_screen.dart';
+import 'package:aura/screens/playlist_scrn.dart';
 import 'package:aura/songs/songs.dart';
 import 'package:flutter/material.dart';
 import 'package:on_audio_query/on_audio_query.dart';
@@ -27,31 +28,27 @@ class Favorite extends StatelessWidget {
           ),
           child: ValueListenableBuilder(
             valueListenable: favorite,
-            builder: (context, value, child) => favorite.value.isEmpty
-                ? const Center(
-                    child: Text(
-                      'Favorite List is empty',
-                      style: TextStyle(fontSize: 20, color: Colors.grey),
-                    ),
-                  )
-                : ListView.builder(
-                    padding: EdgeInsets.only(
-                        left: 10,
-                        right: 10,
-                        bottom: MediaQuery.of(context).size.height * 0.1),
-                    itemCount: favorite.value.length,
-                    itemBuilder: (context, index) {
-                      if (currentlyplaying != null) {
-                        WidgetsBinding.instance
-                            .addPostFrameCallback((timeStamp) {
-                          showBottomSheet(
-                              enableDrag: false,
-                              context: context,
-                              backgroundColor: const Color(0xFF202EAF),
-                              builder: (context) => const MiniPlayer());
-                        });
-                      }
-                      return InkWell(
+            builder: (context, value, child) {
+              if (currentlyplaying != null) {
+                WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                  showBottomSheet(
+                      context: context,
+                      backgroundColor: const Color(0xFF202EAF),
+                      builder: (context) => const MiniPlayer());
+                });
+              }
+              return favorite.value.isEmpty
+                  ? const Center(
+                      child: Text(
+                        'Favorite List is empty',
+                        style: TextStyle(fontSize: 20, color: Colors.grey),
+                      ),
+                    )
+                  : ListView.builder(
+                      padding: EdgeInsets.only(left: 10, right: 10, bottom: 10),
+                      itemCount: favorite.value.length,
+                      physics: const BouncingScrollPhysics(),
+                      itemBuilder: (context, index) => InkWell(
                         onTap: () {
                           playAudio(favorite.value, index);
                           favorite.notifyListeners();
@@ -78,8 +75,9 @@ class Favorite extends StatelessWidget {
                           title: Text(
                             favorite.value[index].songname ?? 'Unknown',
                             style: const TextStyle(
+                                color: fontcolor,
                                 fontWeight: FontWeight.bold,
-                                fontSize: 15,
+                                fontSize: songnamefontsize,
                                 overflow: TextOverflow.ellipsis),
                           ),
                           subtitle: Text(
@@ -87,35 +85,44 @@ class Favorite extends StatelessWidget {
                                 ? '${favorite.value[index].artist}'
                                 : 'Unknown',
                             style: const TextStyle(
-                                overflow: TextOverflow.ellipsis, fontSize: 13),
+                                color: fontcolor,
+                                overflow: TextOverflow.ellipsis,
+                                fontSize: artistfontsize),
                           ),
                           trailing1: FavoriteButton(
                             isfav: true,
                             currentSong: favorite.value[index],
                           ),
-                          trailing2: PopupMenuButton(
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(15)),
-                            icon: const Icon(Icons.more_vert),
-                            itemBuilder: (context) => [
-                              const PopupMenuItem(
-                                value: 0,
-                                child: Text(
-                                  'Add to playlist',
-                                  style: TextStyle(color: Colors.black),
-                                ),
-                              )
-                            ],
-                            onSelected: (value) =>
-                                Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => AddToPlaylist(
-                                  addingsong: favorite.value[index]),
-                            )),
+                          trailing2: Theme(
+                            data: Theme.of(context)
+                                .copyWith(cardColor: const Color(0xFF87BEFF)),
+                            child: PopupMenuButton(
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15)),
+                              icon: const Icon(
+                                Icons.more_vert,
+                                color: fontcolor,
+                              ),
+                              itemBuilder: (context) => [
+                                const PopupMenuItem(
+                                  value: 0,
+                                  child: Text(
+                                    'Add to playlist',
+                                    style: TextStyle(color: Colors.black),
+                                  ),
+                                )
+                              ],
+                              onSelected: (value) =>
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => AddToPlaylist(
+                                    addingsong: favorite.value[index]),
+                              )),
+                            ),
                           ),
                         ),
-                      );
-                    },
-                  ),
+                      ),
+                    );
+            },
           )),
     );
   }

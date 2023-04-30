@@ -70,7 +70,8 @@ class PlaylistInsidePart2 extends StatelessWidget {
               'Unknown',
           style: const TextStyle(
             fontWeight: FontWeight.bold,
-            fontSize: 15,
+            fontSize: songnamefontsize,
+            color: fontcolor,
             overflow: TextOverflow.ellipsis,
           ),
         ),
@@ -79,7 +80,10 @@ class PlaylistInsidePart2 extends StatelessWidget {
                   null
               ? '${playListNotifier.value[currentplaylistindex].container[idx].artist}'
               : 'Unknown',
-          style: const TextStyle(overflow: TextOverflow.ellipsis, fontSize: 13),
+          style: const TextStyle(
+              color: fontcolor,
+              overflow: TextOverflow.ellipsis,
+              fontSize: artistfontsize),
         ),
         trailing1: FavoriteButton(
           isfav: favorite.value.contains(
@@ -87,26 +91,33 @@ class PlaylistInsidePart2 extends StatelessWidget {
           currentSong:
               playListNotifier.value[currentplaylistindex].container[idx],
         ),
-        trailing2: PopupMenuButton(
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-            icon: const Icon(Icons.more_vert),
-            itemBuilder: (context) => [
-                  const PopupMenuItem(
-                    value: 0,
-                    child: Text(
-                      'Remove from playlist',
-                      style: TextStyle(color: Colors.black),
-                    ),
-                  )
-                ],
-            onSelected: (value) {
-              playlistremoveDB(
-                  playListNotifier.value[currentplaylistindex].container[idx],
-                  playlist.name);
-              playListNotifier.value[currentplaylistindex].container.remove(
-                  playListNotifier.value[currentplaylistindex].container[idx]);
-            }),
+        trailing2: Theme(
+          data: Theme.of(context).copyWith(cardColor: const Color(0xFF87BEFF)),
+          child: PopupMenuButton(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15)),
+              icon: const Icon(
+                Icons.more_vert,
+                color: fontcolor,
+              ),
+              itemBuilder: (context) => [
+                    const PopupMenuItem(
+                      value: 0,
+                      child: Text(
+                        'Remove from playlist',
+                        style: TextStyle(color: Colors.black),
+                      ),
+                    )
+                  ],
+              onSelected: (value) {
+                playlistremoveDB(
+                    playListNotifier.value[currentplaylistindex].container[idx],
+                    playlist.name);
+                playListNotifier.value[currentplaylistindex].container.remove(
+                    playListNotifier
+                        .value[currentplaylistindex].container[idx]);
+              }),
+        ),
         tilecolor: const Color(0xFF939DF5),
       ),
     );

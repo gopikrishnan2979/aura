@@ -1,3 +1,6 @@
+import 'package:aura/screens/drawerscreens/about_us.dart';
+import 'package:aura/screens/drawerscreens/privacy_policy.dart';
+import 'package:aura/screens/drawerscreens/terms_and_conditions.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:share_plus/share_plus.dart';
@@ -16,7 +19,7 @@ class DrawerWidget extends StatelessWidget {
         child: Column(
           children: [
             Padding(
-              padding: EdgeInsets.only(left: width * 0.05),
+              padding: EdgeInsets.only(left: width * 0.05, top: height * 0.05),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -25,11 +28,57 @@ class DrawerWidget extends StatelessWidget {
                     height: height * 0.125,
                   ),
                   SizedBox(
-                    height: height * 0.025,
+                    height: height * 0.04,
                   ),
                   InkWell(
                     onTap: () {
-                      Share.share('Check out this awesome app! https://example.com');
+                      Navigator.of(context).pop();
+                      Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => const PrivacyPolicy(),
+                      ));
+                    },
+                    child: const IconTextmerge(
+                        icon: FaIcon(
+                          FontAwesomeIcons.shieldHalved,
+                          color: Colors.white,
+                          size: 24,
+                        ),
+                        text: 'Privacy policy'),
+                  ),
+                  InkWell(
+                    onTap: () {
+                      Navigator.of(context).pop();
+                      Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => const TermsAndCondition(),
+                      ));
+                    },
+                    child: const IconTextmerge(
+                        icon: FaIcon(
+                          FontAwesomeIcons.clipboardCheck,
+                          color: Colors.white,
+                          size: 26,
+                        ),
+                        text: 'Terms and condiitions'),
+                  ),
+                  InkWell(
+                    onTap: () {
+                      showDialog(
+                        context: context,
+                        builder: (context) => const AboutUs(),
+                      );
+                    },
+                    child: const IconTextmerge(
+                        icon: FaIcon(
+                          FontAwesomeIcons.circleInfo,
+                          color: Colors.white,
+                          size: 23,
+                        ),
+                        text: 'About us'),
+                  ),
+                  InkWell(
+                    onTap: () {
+                      Share.share(
+                          'Check out this awesome app! https://example.com');
                     },
                     child: const IconTextmerge(
                         icon: Icon(
@@ -39,27 +88,6 @@ class DrawerWidget extends StatelessWidget {
                         ),
                         text: 'Share'),
                   ),
-                  const IconTextmerge(
-                      icon: FaIcon(
-                        FontAwesomeIcons.shieldHalved,
-                        color: Colors.white,
-                        size: 24,
-                      ),
-                      text: 'Privacy policy'),
-                  const IconTextmerge(
-                      icon: FaIcon(
-                        FontAwesomeIcons.clipboardCheck,
-                        color: Colors.white,
-                        size: 26,
-                      ),
-                      text: 'Terms and condiitions'),
-                  const IconTextmerge(
-                      icon: FaIcon(
-                        FontAwesomeIcons.circleInfo,
-                        color: Colors.white,
-                        size: 23,
-                      ),
-                      text: 'About us'),
                 ],
               ),
             ),

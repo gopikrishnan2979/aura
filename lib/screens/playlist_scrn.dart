@@ -9,6 +9,9 @@ import 'package:flutter/material.dart';
 //Playlist name stored in map as key and value(songs) in list
 
 ValueNotifier<List<EachPlaylist>> playListNotifier = ValueNotifier([]);
+const Color fontcolor = Colors.white;
+const double artistfontsize = 12;
+const double songnamefontsize = 14;
 
 class PlaylistScrn extends StatelessWidget {
   const PlaylistScrn({super.key});
@@ -32,7 +35,6 @@ class PlaylistScrn extends StatelessWidget {
               if (currentlyplaying != null) {
                 WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
                   showBottomSheet(
-                      enableDrag: false,
                       context: context,
                       backgroundColor: const Color(0xFF202EAF),
                       builder: (context) => const MiniPlayer());
@@ -75,6 +77,7 @@ class PlaylistScrn extends StatelessWidget {
         crossAxisSpacing: MediaQuery.of(ctx).size.width * 0.1,
         mainAxisSpacing: MediaQuery.of(ctx).size.width * 0.1,
       ),
+      physics: BouncingScrollPhysics(),
       itemBuilder: (context, index) => InkWell(
         child: elementgridcard(context, index, rebuildkey),
         onTap: () {
@@ -110,46 +113,50 @@ class PlaylistScrn extends StatelessWidget {
           ),
           Positioned(
               right: 0,
-              child: PopupMenuButton(
-                onSelected: (value) {
-                  value == 1
-                      ? renamePlaylist(ctx, index, rebuildkey)
-                      : deletePlaylist(index, ctx);
-                },
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15)),
-                icon: const Icon(Icons.more_vert),
-                itemBuilder: (
-                  context,
-                ) =>
-                    const [
-                  PopupMenuItem(
-                    padding: EdgeInsets.only(
-                      left: 30,
+              child: Theme(
+                data: Theme.of(ctx).copyWith(
+                    cardColor: const Color.fromARGB(255, 255, 237, 192)),
+                child: PopupMenuButton(
+                  onSelected: (value) {
+                    value == 1
+                        ? renamePlaylist(ctx, index, rebuildkey)
+                        : deletePlaylist(index, ctx);
+                  },
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15)),
+                  icon: const Icon(Icons.more_vert),
+                  itemBuilder: (
+                    context,
+                  ) =>
+                      const [
+                    PopupMenuItem(
+                      value: 1,
+                      child: Padding(
+                        padding: EdgeInsets.only(left: 20.0),
+                        child: Text(
+                          'Rename',
+                          style: TextStyle(color: Colors.black),
+                        ),
+                      ),
                     ),
-                    value: 1,
-                    child: Text(
-                      'rename',
-                      style: TextStyle(color: Colors.black),
+                    PopupMenuItem(
+                      value: 2,
+                      child: Padding(
+                        padding: EdgeInsets.only(left: 20.0),
+                        child: Text(
+                          'Delete',
+                          style: TextStyle(color: Colors.black),
+                        ),
+                      ),
                     ),
-                  ),
-                  PopupMenuItem(
-                    padding: EdgeInsets.only(
-                      left: 30,
-                    ),
-                    value: 2,
-                    child: Text(
-                      'delete',
-                      style: TextStyle(color: Colors.black),
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               )),
           Positioned(
               bottom: 0,
               child: Container(
                 decoration: const BoxDecoration(
-                    color: Color(0xFF9FE0C5),
+                    color: Color.fromARGB(255, 252, 242, 176),
                     borderRadius: BorderRadius.only(
                         bottomLeft: Radius.circular(10),
                         bottomRight: Radius.circular(10))),
@@ -161,8 +168,8 @@ class PlaylistScrn extends StatelessWidget {
                       left: MediaQuery.of(ctx).size.width * 0.05),
                   child: Text(
                     playListNotifier.value[index].name,
-                    style:
-                        const TextStyle(color: Color(0xFF0812FF), fontSize: 18),
+                    style: const TextStyle(
+                        color: Color.fromARGB(255, 0, 0, 0), fontSize: 18),
                   ),
                 ),
               ))
@@ -247,6 +254,7 @@ class PlaylistScrn extends StatelessWidget {
     return showDialog(
       context: context,
       builder: (context) => AlertDialog(
+        backgroundColor: const Color.fromARGB(255, 168, 204, 248),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(5),
         ),

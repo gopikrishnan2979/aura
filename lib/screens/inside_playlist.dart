@@ -114,6 +114,7 @@ class InsidePlaylist extends StatelessWidget {
           return Padding(
             padding: const EdgeInsets.only(left: 8.0, right: 8),
             child: ListTileCustom(
+              isgradient: false,
               index: index,
               context: context,
               leading: QueryArtworkWidget(

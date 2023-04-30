@@ -3,8 +3,8 @@ import 'package:aura/common_widget/listtilecustom.dart';
 import 'package:aura/functions/player_function.dart';
 import 'package:aura/screens/commonscreen/add_to_playlist.dart';
 import 'package:aura/screens/favorite.dart';
-import 'package:aura/screens/mini_player.dart';
 import 'package:aura/screens/play_screen.dart';
+import 'package:aura/screens/playlist_scrn.dart';
 import 'package:aura/screens/splash_screen.dart';
 import 'package:aura/songs/songs.dart';
 import 'package:flutter/material.dart';
@@ -98,8 +98,7 @@ class Search extends StatelessWidget {
 
   Widget searchfound(context, ValueNotifier data) {
     return ListView.builder(
-      padding:
-          EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.1),
+      physics: const BouncingScrollPhysics(),
       itemBuilder: (context, index) => InkWell(
         onTap: () {
           Songs selectedsong = data.value[index];
@@ -142,7 +141,8 @@ class Search extends StatelessWidget {
               data.value[index].songname ?? 'Unknown',
               style: const TextStyle(
                   fontWeight: FontWeight.bold,
-                  fontSize: 15,
+                  color: fontcolor,
+                  fontSize: songnamefontsize,
                   overflow: TextOverflow.ellipsis),
             ),
             subtitle: Text(
@@ -150,25 +150,35 @@ class Search extends StatelessWidget {
                   ? '${data.value[index].artist}'
                   : 'Unknown',
               style: const TextStyle(
-                  overflow: TextOverflow.ellipsis, fontSize: 13),
+                  overflow: TextOverflow.ellipsis,
+                  fontSize: artistfontsize,
+                  color: fontcolor),
             ),
             trailing1: FavoriteButton(
                 isfav: favorite.value.contains(data.value[index]),
                 currentSong: data.value[index]),
-            trailing2: PopupMenuButton(
-              onSelected: (value) {
-                if (value == 0) {
-                  Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) =>
-                        AddToPlaylist(addingsong: data.value[index]),
-                  ));
-                }
-              },
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15)),
-              itemBuilder: (context) => const [
-                PopupMenuItem(value: 0, child: Text('Add to playlist'))
-              ],
+            trailing2: Theme(
+              data: Theme.of(context)
+                  .copyWith(cardColor: const Color(0xFF87BEFF)),
+              child: PopupMenuButton(
+                icon: const Icon(
+                  Icons.more_vert,
+                  color: fontcolor,
+                ),
+                onSelected: (value) {
+                  if (value == 0) {
+                    Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) =>
+                          AddToPlaylist(addingsong: data.value[index]),
+                    ));
+                  }
+                },
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15)),
+                itemBuilder: (context) => const [
+                  PopupMenuItem(value: 0, child: Text('Add to playlist'))
+                ],
+              ),
             )),
       ),
       itemCount: data.value.length,
@@ -177,8 +187,7 @@ class Search extends StatelessWidget {
 
   Widget fullListshow(context, ValueNotifier data) {
     return ListView.builder(
-      padding:
-          EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.1),
+      physics: BouncingScrollPhysics(),
       itemBuilder: (context, index) => InkWell(
         onTap: () {
           FocusScopeNode currentFocus = FocusScope.of(context);
@@ -214,35 +223,44 @@ class Search extends StatelessWidget {
               allsongs[index].songname ?? 'Unknown',
               style: const TextStyle(
                 fontWeight: FontWeight.bold,
-                fontSize: 15,
+                fontSize: songnamefontsize,
+                color: fontcolor,
                 overflow: TextOverflow.ellipsis,
               ),
             ),
             subtitle: Text(
               '${allsongs[index].artist}',
               style: const TextStyle(
-                fontSize: 13,
-                overflow: TextOverflow.ellipsis,
-              ),
+                  fontSize: artistfontsize,
+                  overflow: TextOverflow.ellipsis,
+                  color: fontcolor),
             ),
             trailing1: FavoriteButton(
               isfav: favorite.value.contains(allsongs[index]),
               currentSong: allsongs[index],
             ),
-            trailing2: PopupMenuButton(
-              onSelected: (value) {
-                if (value == 0) {
-                  Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) =>
-                        AddToPlaylist(addingsong: allsongs[index]),
-                  ));
-                }
-              },
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15)),
-              itemBuilder: (context) => [
-                const PopupMenuItem(value: 0, child: Text('Add to playlist'))
-              ],
+            trailing2: Theme(
+              data: Theme.of(context)
+                  .copyWith(cardColor: const Color(0xFF87BEFF)),
+              child: PopupMenuButton(
+                onSelected: (value) {
+                  if (value == 0) {
+                    Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) =>
+                          AddToPlaylist(addingsong: allsongs[index]),
+                    ));
+                  }
+                },
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15)),
+                icon: const Icon(
+                  Icons.more_vert,
+                  color: fontcolor,
+                ),
+                itemBuilder: (context) => [
+                  const PopupMenuItem(value: 0, child: Text('Add to playlist'))
+                ],
+              ),
             )),
       ),
       itemCount: allsongs.length,

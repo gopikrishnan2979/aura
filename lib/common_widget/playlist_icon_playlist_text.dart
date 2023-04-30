@@ -21,7 +21,6 @@ class _PlaylistIconState extends State<PlaylistIcon> {
   late bool isadded;
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     isadded = widget.playlist.container.contains(allsongs[widget.index]);
   }

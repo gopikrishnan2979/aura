@@ -29,7 +29,7 @@ class _FavoriteButtonState extends State<FavoriteButton> {
     return InkWell(
         onTap: () {
           setState(() {
-            if (widget.isfav == false) {
+            if (!favorite.value.contains(widget.currentSong)) {
               widget.isfav = true;
               addfavorite(widget.currentSong);
               snackbar(text: 'Added to liked', color: Colors.green);
@@ -39,18 +39,18 @@ class _FavoriteButtonState extends State<FavoriteButton> {
               snackbar(text: 'Removed from liked', color: Colors.red);
             }
             if (widget.color != null) {
-              favorite.notifyListeners();
               recentList.notifyListeners();
               mostPlayedList.notifyListeners();
               playListNotifier.notifyListeners();
             }
+            favorite.notifyListeners();
           });
         },
         child: Icon(
-          Icons.favorite,
+          widget.isfav ? Icons.favorite : Icons.favorite_border_rounded,
           color: widget.isfav
-              ? widget.color ?? const Color(0xFF0812FF)
-              : Colors.white,
+              ? const Color(0xFF00FF08)
+              : widget.color ?? const Color.fromARGB(255, 255, 255, 255),
           size: widget.size ?? 25,
         ));
   }

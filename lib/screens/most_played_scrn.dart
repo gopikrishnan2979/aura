@@ -4,12 +4,13 @@ import 'package:aura/functions/player_function.dart';
 import 'package:aura/screens/commonscreen/add_to_playlist.dart';
 import 'package:aura/screens/favorite.dart';
 import 'package:aura/screens/mini_player.dart';
+import 'package:aura/screens/playlist_scrn.dart';
 import 'package:aura/songs/songs.dart';
 import 'package:flutter/material.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 
 ValueNotifier<List<Songs>> mostPlayedList = ValueNotifier([]);
- 
+
 class MostPlayedScrn extends StatelessWidget {
   const MostPlayedScrn({super.key});
 
@@ -35,6 +36,7 @@ class MostPlayedScrn extends StatelessWidget {
                     children: [
                       IconButton(
                           onPressed: () {
+                            playListNotifier.notifyListeners();
                             Navigator.pop(context);
                           },
                           icon: const Icon(
@@ -57,6 +59,7 @@ class MostPlayedScrn extends StatelessWidget {
                 child: mostPlayedList.value.isEmpty
                     ? songlistempty()
                     : ListView.builder(
+                      physics: const BouncingScrollPhysics(),
                         padding: const EdgeInsets.only(
                             left: 10, right: 10, top: 10, bottom: 30),
                         itemBuilder: (context, index) => InkWell(
@@ -91,15 +94,17 @@ class MostPlayedScrn extends StatelessWidget {
                             tilecolor: const Color(0xFF939DF5),
                             title: Text(
                               mostPlayedList.value[index].songname!,
-                              style: TextStyle(
+                              style: const TextStyle(
                                   fontWeight: FontWeight.bold,
-                                  fontSize: 15,
-                                  overflow: TextOverflow.ellipsis),
+                                  fontSize: songnamefontsize,
+                                  overflow: TextOverflow.ellipsis,
+                                  color: fontcolor),
                             ),
                             subtitle: Text(mostPlayedList.value[index].artist!,
-                                style: TextStyle(
+                                style: const TextStyle(
                                     overflow: TextOverflow.ellipsis,
-                                    fontSize: 13)),
+                                    fontSize: artistfontsize,
+                                    color: fontcolor)),
                             trailing1: FavoriteButton(
                                 isfav: favorite.value
                                     .contains(mostPlayedList.value[index]),
@@ -110,6 +115,10 @@ class MostPlayedScrn extends StatelessWidget {
                               child: PopupMenuButton(
                                 shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(15)),
+                                icon: const Icon(
+                                  Icons.more_vert,
+                                  color: fontcolor,
+                                ),
                                 itemBuilder: (context) => [
                                   const PopupMenuItem(
                                       child: Text('Add to playlist'))

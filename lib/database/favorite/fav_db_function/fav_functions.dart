@@ -4,7 +4,7 @@ import 'package:aura/songs/songs.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 addfavorite(Songs song) async {
-  favorite.value.add(song);
+  favorite.value.insert(0, song);
   Box<FavModel> favdb = await Hive.openBox('favorite');
   FavModel temp = FavModel(id: song.id);
   favdb.add(temp);
