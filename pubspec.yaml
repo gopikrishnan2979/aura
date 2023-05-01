@@ -39,7 +39,6 @@ dependencies:
   hive_flutter: ^1.1.0
   marquee: ^2.2.3
   on_audio_query: ^2.7.0
-  path_provider: ^2.0.14
   permission_handler: ^10.2.0
   share_plus: ^6.3.4
   url_launcher: ^6.1.10
